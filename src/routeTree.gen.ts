@@ -34,6 +34,7 @@ import { Route as AuthenticatedDashboardInstellingenRouteImport } from './routes
 import { Route as AuthenticatedDashboardBerichtenRouteImport } from './routes/_authenticated/dashboard.berichten'
 import { Route as AuthenticatedDashboardAbonnementRouteImport } from './routes/_authenticated/dashboard.abonnement'
 import { Route as AuthenticatedAdminAdminIndexRouteImport } from './routes/_authenticated/_admin/admin.index'
+import { Route as AuthenticatedAdminAdminGebruikersRouteImport } from './routes/_authenticated/_admin/admin.gebruikers'
 
 const WordProfessionalRoute = WordProfessionalRouteImport.update({
   id: '/word-professional',
@@ -166,6 +167,12 @@ const AuthenticatedAdminAdminIndexRoute =
     path: '/admin/',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminAdminGebruikersRoute =
+  AuthenticatedAdminAdminGebruikersRouteImport.update({
+    id: '/admin/gebruikers',
+    path: '/admin/gebruikers',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -190,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/projecten': typeof AuthenticatedDashboardProjectenRoute
   '/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/admin/gebruikers': typeof AuthenticatedAdminAdminGebruikersRoute
   '/admin/': typeof AuthenticatedAdminAdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -212,6 +220,7 @@ export interface FileRoutesByTo {
   '/dashboard/projecten': typeof AuthenticatedDashboardProjectenRoute
   '/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/admin/gebruikers': typeof AuthenticatedAdminAdminGebruikersRoute
   '/admin': typeof AuthenticatedAdminAdminIndexRoute
 }
 export interface FileRoutesById {
@@ -240,6 +249,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/projecten': typeof AuthenticatedDashboardProjectenRoute
   '/_authenticated/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/_authenticated/_admin/admin/gebruikers': typeof AuthenticatedAdminAdminGebruikersRoute
   '/_authenticated/_admin/admin/': typeof AuthenticatedAdminAdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -267,6 +277,7 @@ export interface FileRouteTypes {
     | '/dashboard/projecten'
     | '/dashboard/reviews'
     | '/dashboard/'
+    | '/admin/gebruikers'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '/dashboard/projecten'
     | '/dashboard/reviews'
     | '/dashboard'
+    | '/admin/gebruikers'
     | '/admin'
   id:
     | '__root__'
@@ -316,6 +328,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/projecten'
     | '/_authenticated/dashboard/reviews'
     | '/_authenticated/dashboard/'
+    | '/_authenticated/_admin/admin/gebruikers'
     | '/_authenticated/_admin/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -510,15 +523,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/_admin/admin/gebruikers': {
+      id: '/_authenticated/_admin/admin/gebruikers'
+      path: '/admin/gebruikers'
+      fullPath: '/admin/gebruikers'
+      preLoaderRoute: typeof AuthenticatedAdminAdminGebruikersRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
   }
 }
 
 interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminAdminGebruikersRoute: typeof AuthenticatedAdminAdminGebruikersRoute
   AuthenticatedAdminAdminIndexRoute: typeof AuthenticatedAdminAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
   {
+    AuthenticatedAdminAdminGebruikersRoute:
+      AuthenticatedAdminAdminGebruikersRoute,
     AuthenticatedAdminAdminIndexRoute: AuthenticatedAdminAdminIndexRoute,
   }
 
