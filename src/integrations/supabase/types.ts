@@ -347,6 +347,27 @@ export type Database = {
           },
         ]
       }
+      theme_settings: {
+        Row: {
+          id: string
+          tokens: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          id?: string
+          tokens: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          id?: string
+          tokens?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
