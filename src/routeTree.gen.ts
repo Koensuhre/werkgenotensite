@@ -29,6 +29,7 @@ import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
 import { Route as DashboardInstellingenRouteImport } from './routes/dashboard.instellingen'
 import { Route as DashboardBerichtenRouteImport } from './routes/dashboard.berichten'
 import { Route as DashboardAbonnementRouteImport } from './routes/dashboard.abonnement'
+import { Route as CmsSlugRouteImport } from './routes/cms.$slug'
 
 const WordProfessionalRoute = WordProfessionalRouteImport.update({
   id: '/word-professional',
@@ -130,6 +131,11 @@ const DashboardAbonnementRoute = DashboardAbonnementRouteImport.update({
   path: '/abonnement',
   getParentRoute: () => DashboardRoute,
 } as any)
+const CmsSlugRoute = CmsSlugRouteImport.update({
+  id: '/cms/$slug',
+  path: '/cms/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/prijzen': typeof PrijzenRoute
   '/vakmensen': typeof VakmensenRouteWithChildren
   '/word-professional': typeof WordProfessionalRoute
+  '/cms/$slug': typeof CmsSlugRoute
   '/dashboard/abonnement': typeof DashboardAbonnementRoute
   '/dashboard/berichten': typeof DashboardBerichtenRoute
   '/dashboard/instellingen': typeof DashboardInstellingenRoute
@@ -160,6 +167,7 @@ export interface FileRoutesByTo {
   '/plaats-opdracht': typeof PlaatsOpdrachtRoute
   '/prijzen': typeof PrijzenRoute
   '/word-professional': typeof WordProfessionalRoute
+  '/cms/$slug': typeof CmsSlugRoute
   '/dashboard/abonnement': typeof DashboardAbonnementRoute
   '/dashboard/berichten': typeof DashboardBerichtenRoute
   '/dashboard/instellingen': typeof DashboardInstellingenRoute
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/prijzen': typeof PrijzenRoute
   '/vakmensen': typeof VakmensenRouteWithChildren
   '/word-professional': typeof WordProfessionalRoute
+  '/cms/$slug': typeof CmsSlugRoute
   '/dashboard/abonnement': typeof DashboardAbonnementRoute
   '/dashboard/berichten': typeof DashboardBerichtenRoute
   '/dashboard/instellingen': typeof DashboardInstellingenRoute
@@ -207,6 +216,7 @@ export interface FileRouteTypes {
     | '/prijzen'
     | '/vakmensen'
     | '/word-professional'
+    | '/cms/$slug'
     | '/dashboard/abonnement'
     | '/dashboard/berichten'
     | '/dashboard/instellingen'
@@ -226,6 +236,7 @@ export interface FileRouteTypes {
     | '/plaats-opdracht'
     | '/prijzen'
     | '/word-professional'
+    | '/cms/$slug'
     | '/dashboard/abonnement'
     | '/dashboard/berichten'
     | '/dashboard/instellingen'
@@ -248,6 +259,7 @@ export interface FileRouteTypes {
     | '/prijzen'
     | '/vakmensen'
     | '/word-professional'
+    | '/cms/$slug'
     | '/dashboard/abonnement'
     | '/dashboard/berichten'
     | '/dashboard/instellingen'
@@ -271,6 +283,7 @@ export interface RootRouteChildren {
   PrijzenRoute: typeof PrijzenRoute
   VakmensenRoute: typeof VakmensenRouteWithChildren
   WordProfessionalRoute: typeof WordProfessionalRoute
+  CmsSlugRoute: typeof CmsSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -415,6 +428,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAbonnementRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/cms/$slug': {
+      id: '/cms/$slug'
+      path: '/cms/$slug'
+      fullPath: '/cms/$slug'
+      preLoaderRoute: typeof CmsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -480,6 +500,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrijzenRoute: PrijzenRoute,
   VakmensenRoute: VakmensenRouteWithChildren,
   WordProfessionalRoute: WordProfessionalRoute,
+  CmsSlugRoute: CmsSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
