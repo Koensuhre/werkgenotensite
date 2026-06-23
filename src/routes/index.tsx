@@ -294,7 +294,7 @@ function Pricing() {
     <section id="pricing" className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-2xl text-center">
         <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Eenvoudige prijzen voor professionals</h2>
-        <p className="mt-2 text-muted-foreground">Opdrachtgevers gebruiken Vakwerk gratis. Professionals betalen per maand.</p>
+        <p className="mt-2 text-muted-foreground">Opdrachtgevers gebruiken Werkgenoten gratis. Professionals betalen per maand.</p>
       </div>
       <div className="mt-12 grid gap-4 md:grid-cols-3">
         {plans.map((p) => (
