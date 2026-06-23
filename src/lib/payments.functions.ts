@@ -101,8 +101,8 @@ export const createPortalSession = createServerFn({ method: "POST" })
   .inputValidator((data: { returnUrl?: string; environment: StripeEnv }) => data)
   .handler(async ({ data, context }): Promise<PortalSessionResult> => {
     const { supabase, userId } = context;
-    const { data: sub, error: subError } = await supabase
-      .from("subscriptions")
+    const { data: sub, error: subError } = await (supabase
+      .from("subscriptions") as any)
       .select("stripe_customer_id")
       .eq("user_id", userId)
       .eq("environment", data.environment)
