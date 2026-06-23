@@ -2,6 +2,7 @@ import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-rout
 import { useEffect } from "react";
 import { LayoutDashboard, Users, Briefcase, Tags, Star, Palette, FileText } from "lucide-react";
 import { useCurrentUserRoles } from "@/hooks/use-current-profile";
+import { useSession } from "@/hooks/use-session";
 
 export const Route = createFileRoute("/_authenticated/_admin")({
   head: () => ({
@@ -24,15 +25,17 @@ const nav = [
 ] as const;
 
 function AdminLayout() {
-  const { data: roles, isLoading } = useCurrentUserRoles();
+  const { user, loading: sessionLoading } = useSession();
+  const { data: roles, isLoading: rolesLoading, isFetching } = useCurrentUserRoles();
   const navigate = useNavigate();
   const isAdmin = (roles ?? []).includes("admin");
+  const stillResolving = sessionLoading || !user || rolesLoading || isFetching || roles === undefined;
 
   useEffect(() => {
-    if (!isLoading && !isAdmin) navigate({ to: "/dashboard", replace: true });
-  }, [isLoading, isAdmin, navigate]);
+    if (!stillResolving && !isAdmin) navigate({ to: "/dashboard", replace: true });
+  }, [stillResolving, isAdmin, navigate]);
 
-  if (isLoading || !isAdmin) {
+  if (stillResolving || !isAdmin) {
     return <div className="mx-auto max-w-7xl px-4 py-10 text-sm text-muted-foreground">Bezig met laden…</div>;
   }
 
