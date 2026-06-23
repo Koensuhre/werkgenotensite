@@ -36,6 +36,7 @@ import { Route as AuthenticatedDashboardAbonnementRouteImport } from './routes/_
 import { Route as AuthenticatedAdminAdminIndexRouteImport } from './routes/_authenticated/_admin/admin.index'
 import { Route as AuthenticatedAdminAdminThemaRouteImport } from './routes/_authenticated/_admin/admin.thema'
 import { Route as AuthenticatedAdminAdminReviewsRouteImport } from './routes/_authenticated/_admin/admin.reviews'
+import { Route as AuthenticatedAdminAdminReviewProfessionalsRouteImport } from './routes/_authenticated/_admin/admin.review-professionals'
 import { Route as AuthenticatedAdminAdminReviewOpdrachtenRouteImport } from './routes/_authenticated/_admin/admin.review-opdrachten'
 import { Route as AuthenticatedAdminAdminPaginasRouteImport } from './routes/_authenticated/_admin/admin.paginas'
 import { Route as AuthenticatedAdminAdminOpdrachtenRouteImport } from './routes/_authenticated/_admin/admin.opdrachten'
@@ -186,6 +187,12 @@ const AuthenticatedAdminAdminReviewsRoute =
     path: '/admin/reviews',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminAdminReviewProfessionalsRoute =
+  AuthenticatedAdminAdminReviewProfessionalsRouteImport.update({
+    id: '/admin/review-professionals',
+    path: '/admin/review-professionals',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminAdminReviewOpdrachtenRoute =
   AuthenticatedAdminAdminReviewOpdrachtenRouteImport.update({
     id: '/admin/review-opdrachten',
@@ -251,6 +258,7 @@ export interface FileRoutesByFullPath {
   '/admin/opdrachten': typeof AuthenticatedAdminAdminOpdrachtenRoute
   '/admin/paginas': typeof AuthenticatedAdminAdminPaginasRouteWithChildren
   '/admin/review-opdrachten': typeof AuthenticatedAdminAdminReviewOpdrachtenRoute
+  '/admin/review-professionals': typeof AuthenticatedAdminAdminReviewProfessionalsRoute
   '/admin/reviews': typeof AuthenticatedAdminAdminReviewsRoute
   '/admin/thema': typeof AuthenticatedAdminAdminThemaRoute
   '/admin/': typeof AuthenticatedAdminAdminIndexRoute
@@ -281,6 +289,7 @@ export interface FileRoutesByTo {
   '/admin/opdrachten': typeof AuthenticatedAdminAdminOpdrachtenRoute
   '/admin/paginas': typeof AuthenticatedAdminAdminPaginasRouteWithChildren
   '/admin/review-opdrachten': typeof AuthenticatedAdminAdminReviewOpdrachtenRoute
+  '/admin/review-professionals': typeof AuthenticatedAdminAdminReviewProfessionalsRoute
   '/admin/reviews': typeof AuthenticatedAdminAdminReviewsRoute
   '/admin/thema': typeof AuthenticatedAdminAdminThemaRoute
   '/admin': typeof AuthenticatedAdminAdminIndexRoute
@@ -317,6 +326,7 @@ export interface FileRoutesById {
   '/_authenticated/_admin/admin/opdrachten': typeof AuthenticatedAdminAdminOpdrachtenRoute
   '/_authenticated/_admin/admin/paginas': typeof AuthenticatedAdminAdminPaginasRouteWithChildren
   '/_authenticated/_admin/admin/review-opdrachten': typeof AuthenticatedAdminAdminReviewOpdrachtenRoute
+  '/_authenticated/_admin/admin/review-professionals': typeof AuthenticatedAdminAdminReviewProfessionalsRoute
   '/_authenticated/_admin/admin/reviews': typeof AuthenticatedAdminAdminReviewsRoute
   '/_authenticated/_admin/admin/thema': typeof AuthenticatedAdminAdminThemaRoute
   '/_authenticated/_admin/admin/': typeof AuthenticatedAdminAdminIndexRoute
@@ -352,6 +362,7 @@ export interface FileRouteTypes {
     | '/admin/opdrachten'
     | '/admin/paginas'
     | '/admin/review-opdrachten'
+    | '/admin/review-professionals'
     | '/admin/reviews'
     | '/admin/thema'
     | '/admin/'
@@ -382,6 +393,7 @@ export interface FileRouteTypes {
     | '/admin/opdrachten'
     | '/admin/paginas'
     | '/admin/review-opdrachten'
+    | '/admin/review-professionals'
     | '/admin/reviews'
     | '/admin/thema'
     | '/admin'
@@ -417,6 +429,7 @@ export interface FileRouteTypes {
     | '/_authenticated/_admin/admin/opdrachten'
     | '/_authenticated/_admin/admin/paginas'
     | '/_authenticated/_admin/admin/review-opdrachten'
+    | '/_authenticated/_admin/admin/review-professionals'
     | '/_authenticated/_admin/admin/reviews'
     | '/_authenticated/_admin/admin/thema'
     | '/_authenticated/_admin/admin/'
@@ -628,6 +641,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdminReviewsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/_admin/admin/review-professionals': {
+      id: '/_authenticated/_admin/admin/review-professionals'
+      path: '/admin/review-professionals'
+      fullPath: '/admin/review-professionals'
+      preLoaderRoute: typeof AuthenticatedAdminAdminReviewProfessionalsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/_admin/admin/review-opdrachten': {
       id: '/_authenticated/_admin/admin/review-opdrachten'
       path: '/admin/review-opdrachten'
@@ -694,6 +714,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminAdminOpdrachtenRoute: typeof AuthenticatedAdminAdminOpdrachtenRoute
   AuthenticatedAdminAdminPaginasRoute: typeof AuthenticatedAdminAdminPaginasRouteWithChildren
   AuthenticatedAdminAdminReviewOpdrachtenRoute: typeof AuthenticatedAdminAdminReviewOpdrachtenRoute
+  AuthenticatedAdminAdminReviewProfessionalsRoute: typeof AuthenticatedAdminAdminReviewProfessionalsRoute
   AuthenticatedAdminAdminReviewsRoute: typeof AuthenticatedAdminAdminReviewsRoute
   AuthenticatedAdminAdminThemaRoute: typeof AuthenticatedAdminAdminThemaRoute
   AuthenticatedAdminAdminIndexRoute: typeof AuthenticatedAdminAdminIndexRoute
@@ -711,6 +732,8 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
       AuthenticatedAdminAdminPaginasRouteWithChildren,
     AuthenticatedAdminAdminReviewOpdrachtenRoute:
       AuthenticatedAdminAdminReviewOpdrachtenRoute,
+    AuthenticatedAdminAdminReviewProfessionalsRoute:
+      AuthenticatedAdminAdminReviewProfessionalsRoute,
     AuthenticatedAdminAdminReviewsRoute: AuthenticatedAdminAdminReviewsRoute,
     AuthenticatedAdminAdminThemaRoute: AuthenticatedAdminAdminThemaRoute,
     AuthenticatedAdminAdminIndexRoute: AuthenticatedAdminAdminIndexRoute,
