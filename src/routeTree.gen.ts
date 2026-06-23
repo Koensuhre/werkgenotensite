@@ -24,6 +24,7 @@ import { Route as OpdrachtenIndexRouteImport } from './routes/opdrachten.index'
 import { Route as VakmensenSlugRouteImport } from './routes/vakmensen.$slug'
 import { Route as OpdrachtenSlugRouteImport } from './routes/opdrachten.$slug'
 import { Route as CmsSlugRouteImport } from './routes/cms.$slug'
+import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/_admin/route'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
@@ -117,6 +118,11 @@ const OpdrachtenSlugRoute = OpdrachtenSlugRouteImport.update({
 const CmsSlugRoute = CmsSlugRouteImport.update({
   id: '/cms/$slug',
   path: '/cms/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
+  id: '/checkout/return',
+  path: '/checkout/return',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -248,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/vakmensen': typeof VakmensenRouteWithChildren
   '/word-professional': typeof WordProfessionalRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/checkout/return': typeof CheckoutReturnRoute
   '/cms/$slug': typeof CmsSlugRoute
   '/opdrachten/$slug': typeof OpdrachtenSlugRoute
   '/vakmensen/$slug': typeof VakmensenSlugRoute
@@ -280,6 +287,7 @@ export interface FileRoutesByTo {
   '/plaats-opdracht': typeof PlaatsOpdrachtRoute
   '/prijzen': typeof PrijzenRoute
   '/word-professional': typeof WordProfessionalRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/cms/$slug': typeof CmsSlugRoute
   '/opdrachten/$slug': typeof OpdrachtenSlugRoute
   '/vakmensen/$slug': typeof VakmensenSlugRoute
@@ -318,6 +326,7 @@ export interface FileRoutesById {
   '/word-professional': typeof WordProfessionalRoute
   '/_authenticated/_admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/checkout/return': typeof CheckoutReturnRoute
   '/cms/$slug': typeof CmsSlugRoute
   '/opdrachten/$slug': typeof OpdrachtenSlugRoute
   '/vakmensen/$slug': typeof VakmensenSlugRoute
@@ -355,6 +364,7 @@ export interface FileRouteTypes {
     | '/vakmensen'
     | '/word-professional'
     | '/dashboard'
+    | '/checkout/return'
     | '/cms/$slug'
     | '/opdrachten/$slug'
     | '/vakmensen/$slug'
@@ -387,6 +397,7 @@ export interface FileRouteTypes {
     | '/plaats-opdracht'
     | '/prijzen'
     | '/word-professional'
+    | '/checkout/return'
     | '/cms/$slug'
     | '/opdrachten/$slug'
     | '/vakmensen/$slug'
@@ -424,6 +435,7 @@ export interface FileRouteTypes {
     | '/word-professional'
     | '/_authenticated/_admin'
     | '/_authenticated/dashboard'
+    | '/checkout/return'
     | '/cms/$slug'
     | '/opdrachten/$slug'
     | '/vakmensen/$slug'
@@ -460,6 +472,7 @@ export interface RootRouteChildren {
   PrijzenRoute: typeof PrijzenRoute
   VakmensenRoute: typeof VakmensenRouteWithChildren
   WordProfessionalRoute: typeof WordProfessionalRoute
+  CheckoutReturnRoute: typeof CheckoutReturnRoute
   CmsSlugRoute: typeof CmsSlugRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
@@ -569,6 +582,13 @@ declare module '@tanstack/react-router' {
       path: '/cms/$slug'
       fullPath: '/cms/$slug'
       preLoaderRoute: typeof CmsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/return': {
+      id: '/checkout/return'
+      path: '/checkout/return'
+      fullPath: '/checkout/return'
+      preLoaderRoute: typeof CheckoutReturnRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -845,6 +865,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrijzenRoute: PrijzenRoute,
   VakmensenRoute: VakmensenRouteWithChildren,
   WordProfessionalRoute: WordProfessionalRoute,
+  CheckoutReturnRoute: CheckoutReturnRoute,
   CmsSlugRoute: CmsSlugRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
