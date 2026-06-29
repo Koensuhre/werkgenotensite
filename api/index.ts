@@ -1,3 +1,3 @@
-import { createServer } from "../dist/server/server.js";
+import app from "../dist/server/server.js";
 
-export default createServer;
+export default app;
