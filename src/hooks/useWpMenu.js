@@ -1,4 +1,3 @@
-// src/hooks/useWpMenu.js
 import { useState, useEffect } from 'react';
 
 export function useWpMenu(location = 'primary') {

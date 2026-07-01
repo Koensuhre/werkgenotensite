@@ -50,7 +50,7 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <a className="hover:text-foreground" href="#">
+                <a className="hover:text-foreground" href="https://werkgenoten-a92fcbbb.vercel.app">
                   Over ons
                 </a>
               </li>
