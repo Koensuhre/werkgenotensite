@@ -23,7 +23,7 @@ function OverOnsPage() {
   }, [])
 
   if (!page) {
-    return <div>Laden...</div>
+    return <div>testen...</div>
   }
 
   return (
