@@ -39,7 +39,7 @@ function Pricing() {
     <PaymentTestModeBanner />
     <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
       <div className="text-center">
-        <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">Eenvoudige111 prijzen, geen verrassingen</h1>
+        <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">Eenvoudige prijzen, geen verrassingen</h1>
         <p className="mx-auto mt-4 max-w-xl text-muted-foreground">Opdrachtgevers betalen niets. Professionals kiezen een abonnement dat bij hun bedrijf past.</p>
       </div>
       <div className="mt-14 grid gap-4 md:grid-cols-3">
