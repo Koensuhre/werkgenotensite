@@ -45,9 +45,6 @@ export const Route = createFileRoute("/$")({
 
 function WpCatchAllPage() {
   const { page, slug } = Route.useLoaderData();
-  // Same key as the loader so we hit the warm cache instead of triggering
-  // a second fetch (which on slow/mobile networks throws and blanks the page).
-  // Loader data is the source of truth; background refetches only upgrade it.
   const { data } = useQuery({ ...cmsPageQuery(slug), initialData: page });
   const current = data ?? page;
   if (!current.blocks?.length) {
