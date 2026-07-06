@@ -6,6 +6,38 @@ import type Stripe from "stripe";
 type CheckoutSessionResult = { clientSecret: string } | { error: string };
 type PortalSessionResult = { url: string } | { error: string };
 
+export type PlanDTO = {
+  priceId: string; // lookup_key
+  productId: string;
+  name: string;
+  tagline: string | null;
+  price: number; // in currency major unit (e.g. euros)
+  currency: string;
+  interval: "day" | "week" | "month" | "year" | null;
+  features: string[];
+  highlight: boolean;
+  cta: string;
+  sort: number;
+};
+
+function parseFeatures(raw: string | null | undefined): string[] {
+  if (!raw) return [];
+  const trimmed = raw.trim();
+  if (!trimmed) return [];
+  if (trimmed.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) return parsed.map((v) => String(v)).filter(Boolean);
+    } catch {
+      /* ignore */
+    }
+  }
+  return trimmed
+    .split(/\r?\n|\|/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 async function resolveOrCreateCustomer(
   stripe: ReturnType<typeof createStripeClient>,
   options: { email?: string; userId?: string },
@@ -119,6 +151,45 @@ export const createPortalSession = createServerFn({ method: "POST" })
         ...(data.returnUrl && { return_url: data.returnUrl }),
       });
       return { url: portal.url };
+    } catch (error) {
+      return { error: getStripeErrorMessage(error) };
+    }
+  });
+
+export const listPlans = createServerFn({ method: "GET" })
+  .inputValidator((data: { environment: StripeEnv }) => data)
+  .handler(async ({ data }): Promise<{ plans: PlanDTO[] } | { error: string }> => {
+    try {
+      const stripe = createStripeClient(data.environment);
+      const prices = await stripe.prices.list({
+        active: true,
+        limit: 100,
+        expand: ["data.product"],
+      });
+
+      const plans: PlanDTO[] = [];
+      for (const price of prices.data) {
+        if (price.type !== "recurring" || !price.recurring) continue;
+        if (!price.lookup_key) continue;
+        const product = price.product as Stripe.Product;
+        if (!product || typeof product === "string" || product.deleted || !product.active) continue;
+        const meta = product.metadata ?? {};
+        plans.push({
+          priceId: price.lookup_key,
+          productId: product.id,
+          name: product.name,
+          tagline: meta.tagline ?? product.description ?? null,
+          price: (price.unit_amount ?? 0) / 100,
+          currency: price.currency,
+          interval: price.recurring.interval,
+          features: parseFeatures(meta.features),
+          highlight: meta.highlight === "true" || meta.highlight === "1",
+          cta: meta.cta ?? "Kies dit plan",
+          sort: Number.parseInt(meta.sort ?? "0", 10) || 0,
+        });
+      }
+      plans.sort((a, b) => a.sort - b.sort || a.price - b.price);
+      return { plans };
     } catch (error) {
       return { error: getStripeErrorMessage(error) };
     }

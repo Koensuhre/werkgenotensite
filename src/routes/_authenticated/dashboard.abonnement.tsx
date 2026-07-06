@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { plans } from "@/lib/mock-data";
+import { usePlans } from "@/lib/queries";
 import { useSession } from "@/hooks/use-session";
 import { useSubscription, isActiveSubscription } from "@/hooks/use-subscription";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -17,6 +17,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/abonnement")({
 function Abonnement() {
   const { user } = useSession();
   const { data: sub } = useSubscription();
+  const { data: plans = [], isLoading } = usePlans();
   const [checkoutPriceId, setCheckoutPriceId] = useState<string | null>(null);
   const [opening, setOpening] = useState(false);
 
@@ -62,18 +63,29 @@ function Abonnement() {
         </button>
       )}
 
+      {isLoading ? (
+        <div className="mt-8 flex justify-center py-10">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : plans.length === 0 ? (
+        <div className="mt-6 rounded-xl border border-border/60 bg-surface/40 p-8 text-sm text-muted-foreground">
+          Er zijn nog geen abonnementen beschikbaar.
+        </div>
+      ) : (
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         {plans.map((p) => {
           const isCurrent = currentPlan?.priceId === p.priceId;
           return (
             <div
-              key={p.name}
+              key={p.priceId}
               className={`rounded-xl border p-5 ${p.highlight ? "border-brand/50 bg-card-gradient shadow-glow" : "border-border/60 bg-card-gradient shadow-card"}`}
             >
               <div className="text-sm font-medium">{p.name}</div>
               <div className="mt-2 text-3xl font-semibold">
                 €{p.price}
-                <span className="text-sm font-normal text-muted-foreground">/mnd</span>
+                <span className="text-sm font-normal text-muted-foreground">
+                  /{p.interval === "year" ? "jr" : "mnd"}
+                </span>
               </div>
               <ul className="mt-4 space-y-1.5 text-xs">
                 {p.features.map((f) => (
@@ -93,6 +105,7 @@ function Abonnement() {
           );
         })}
       </div>
+      )}
 
       <Dialog open={!!checkoutPriceId} onOpenChange={(open) => !open && setCheckoutPriceId(null)}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden">

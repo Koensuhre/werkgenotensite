@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { plans } from "@/lib/mock-data";
+import { usePlans } from "@/lib/queries";
 import { useSession } from "@/hooks/use-session";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
@@ -29,6 +29,7 @@ function Pricing() {
   const navigate = useNavigate();
   const { user } = useSession();
   const [checkoutPriceId, setCheckoutPriceId] = useState<string | null>(null);
+  const { data: plans = [], isLoading } = usePlans();
 
   const startCheckout = (priceId: string) => {
     if (!user) {
@@ -51,10 +52,19 @@ function Pricing() {
             past.
           </p>
         </div>
+        {isLoading ? (
+          <div className="mt-14 flex justify-center py-20">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : plans.length === 0 ? (
+          <div className="mt-14 rounded-xl border border-border/60 bg-surface/40 p-10 text-center text-sm text-muted-foreground">
+            Er zijn nog geen abonnementen geconfigureerd. Neem contact op voor meer informatie.
+          </div>
+        ) : (
         <div className="mt-14 grid gap-4 md:grid-cols-3">
           {plans.map((p) => (
             <div
-              key={p.name}
+              key={p.priceId}
               className={`relative rounded-2xl border p-6 ${p.highlight ? "border-brand/50 bg-card-gradient shadow-glow" : "border-border/60 bg-card-gradient shadow-card"}`}
             >
               {p.highlight && (
@@ -65,7 +75,9 @@ function Pricing() {
               <div className="text-sm font-medium">{p.name}</div>
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="text-4xl font-semibold">€{p.price}</span>
-                <span className="text-sm text-muted-foreground">/maand</span>
+                <span className="text-sm text-muted-foreground">
+                  /{p.interval === "year" ? "jaar" : "maand"}
+                </span>
               </div>
               <p className="mt-2 text-sm text-muted-foreground">{p.tagline}</p>
               <ul className="mt-6 space-y-2 text-sm">
@@ -86,6 +98,7 @@ function Pricing() {
             </div>
           ))}
         </div>
+        )}
         <p className="mt-10 text-center text-xs text-muted-foreground">
           Alle prijzen zijn exclusief BTW. Maandelijks opzegbaar. Niet zeker welke past?{" "}
           <Link to="/word-professional" className="underline">

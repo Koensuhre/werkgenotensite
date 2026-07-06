@@ -1,8 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, Sparkles, Shield, Clock, Star, Zap } from "lucide-react";
-import { testimonials, stats, plans } from "@/lib/mock-data";
 import { CmsFallback } from "@/components/cms/CmsFallback";
-import { useCategories, useJobs, formatBudget, timeAgo } from "@/lib/queries";
+import {
+  useCategories,
+  useCategoryCounts,
+  useJobs,
+  useHomeStats,
+  useTopReviews,
+  usePlans,
+  formatBudget,
+  timeAgo,
+} from "@/lib/queries";
 
 const CATEGORY_ICONS: Record<string, string> = {
   schilderwerk: "🎨",
@@ -235,6 +243,7 @@ function HowItWorks() {
 
 function Categories() {
   const { data: categories = [] } = useCategories();
+  const { data: counts } = useCategoryCounts();
   return (
     <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -251,7 +260,9 @@ function Categories() {
         </Link>
       </div>
       <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-        {categories.map((c) => (
+        {categories.map((c) => {
+          const openCount = counts?.get(c.id) ?? 0;
+          return (
           <Link
             key={c.slug}
             to="/vakmensen"
@@ -262,9 +273,13 @@ function Categories() {
             {c.description && (
               <div className="mt-1 text-xs text-muted-foreground line-clamp-1">{c.description}</div>
             )}
+            <div className="mt-2 text-xs text-brand">
+              {openCount > 0 ? `${openCount} open opdrachten` : "Nog geen opdrachten"}
+            </div>
             <ArrowRight className="absolute right-4 top-4 h-4 w-4 text-muted-foreground opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-0.5" />
           </Link>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
@@ -320,6 +335,13 @@ function FeaturedJobs() {
 }
 
 function Stats() {
+  const { data } = useHomeStats();
+  const stats = [
+    { value: data?.jobsCount ?? 0, label: "Opdrachten geplaatst", suffix: "+" },
+    { value: data?.prosCount ?? 0, label: "Professionals", suffix: "+" },
+    { value: data?.reviewsCount ?? 0, label: "Reviews", suffix: "+" },
+    { value: data?.avgRating ?? 0, label: "Gemiddelde score", suffix: "/5" },
+  ];
   return (
     <section className="border-y border-border/60 bg-surface/30 py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -342,6 +364,8 @@ function Stats() {
 }
 
 function Testimonials() {
+  const { data: reviews = [] } = useTopReviews(4);
+  if (reviews.length === 0) return null;
   return (
     <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-2xl text-center">
@@ -349,9 +373,9 @@ function Testimonials() {
         <p className="mt-2 text-muted-foreground">Eerlijke reviews, na elke afgeronde klus.</p>
       </div>
       <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {testimonials.map((t) => (
+        {reviews.map((t) => (
           <figure
-            key={t.name}
+            key={t.id}
             className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-5"
           >
             <div className="flex gap-0.5 text-brand">
@@ -359,10 +383,17 @@ function Testimonials() {
                 <Star key={i} className="h-4 w-4 fill-brand" />
               ))}
             </div>
-            <blockquote className="mt-3 text-sm">{t.quote}</blockquote>
+            <blockquote className="mt-3 text-sm">{t.body}</blockquote>
             <figcaption className="mt-4 text-xs">
-              <div className="font-medium">{t.name}</div>
-              <div className="text-muted-foreground">{t.role}</div>
+              <div className="font-medium">
+                {t.client?.display_name ?? "Opdrachtgever"}
+                {t.client?.city ? `, ${t.client.city}` : ""}
+              </div>
+              {t.pro?.company || t.pro?.display_name ? (
+                <div className="text-muted-foreground">
+                  over {t.pro?.company ?? t.pro?.display_name}
+                </div>
+              ) : null}
             </figcaption>
           </figure>
         ))}
@@ -372,6 +403,8 @@ function Testimonials() {
 }
 
 function Pricing() {
+  const { data: plans = [] } = usePlans();
+  if (plans.length === 0) return null;
   return (
     <section id="pricing" className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-2xl text-center">
@@ -396,11 +429,13 @@ function Pricing() {
             <div className="text-sm font-medium">{p.name}</div>
             <div className="mt-4 flex items-baseline gap-1">
               <span className="text-4xl font-semibold tracking-tight">€{p.price}</span>
-              <span className="text-sm text-muted-foreground">/maand</span>
+              <span className="text-sm text-muted-foreground">
+                /{p.interval === "year" ? "jaar" : "maand"}
+              </span>
             </div>
             <p className="mt-2 text-sm text-muted-foreground">{p.tagline}</p>
             <ul className="mt-6 space-y-2 text-sm">
-              {p.features.map((f) => (
+              {p.features.map((f: string) => (
                 <li key={f} className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                   <span>{f}</span>
@@ -408,7 +443,7 @@ function Pricing() {
               ))}
             </ul>
             <Link
-              to="/word-professional"
+              to="/prijzen"
               className={`mt-8 block rounded-lg px-4 py-2.5 text-center text-sm font-medium transition-colors ${p.highlight ? "bg-brand-gradient text-brand-foreground" : "border border-border bg-surface hover:bg-surface-2"}`}
             >
               {p.cta}
