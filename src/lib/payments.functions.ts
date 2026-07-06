@@ -6,6 +6,38 @@ import type Stripe from "stripe";
 type CheckoutSessionResult = { clientSecret: string } | { error: string };
 type PortalSessionResult = { url: string } | { error: string };
 
+export type PlanDTO = {
+  priceId: string; // lookup_key
+  productId: string;
+  name: string;
+  tagline: string | null;
+  price: number; // in currency major unit (e.g. euros)
+  currency: string;
+  interval: "day" | "week" | "month" | "year" | null;
+  features: string[];
+  highlight: boolean;
+  cta: string;
+  sort: number;
+};
+
+function parseFeatures(raw: string | null | undefined): string[] {
+  if (!raw) return [];
+  const trimmed = raw.trim();
+  if (!trimmed) return [];
+  if (trimmed.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) return parsed.map((v) => String(v)).filter(Boolean);
+    } catch {
+      /* ignore */
+    }
+  }
+  return trimmed
+    .split(/\r?\n|\|/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 async function resolveOrCreateCustomer(
   stripe: ReturnType<typeof createStripeClient>,
   options: { email?: string; userId?: string },
