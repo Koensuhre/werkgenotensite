@@ -38,6 +38,7 @@ import { Route as AuthenticatedDashboardBerichtenIndexRouteImport } from './rout
 import { Route as AuthenticatedAdminAdminIndexRouteImport } from './routes/_authenticated/_admin/admin.index'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as AuthenticatedDashboardProjectenJobIdRouteImport } from './routes/_authenticated/dashboard.projecten.$jobId'
+import { Route as AuthenticatedDashboardBerichtenJobIdRouteImport } from './routes/_authenticated/dashboard.berichten.$jobId'
 import { Route as AuthenticatedAdminAdminThemaRouteImport } from './routes/_authenticated/_admin/admin.thema'
 import { Route as AuthenticatedAdminAdminReviewsRouteImport } from './routes/_authenticated/_admin/admin.reviews'
 import { Route as AuthenticatedAdminAdminReviewProfessionalsRouteImport } from './routes/_authenticated/_admin/admin.review-professionals'
@@ -201,6 +202,12 @@ const AuthenticatedDashboardProjectenJobIdRoute =
     path: '/projecten/$jobId',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardBerichtenJobIdRoute =
+  AuthenticatedDashboardBerichtenJobIdRouteImport.update({
+    id: '/berichten/$jobId',
+    path: '/berichten/$jobId',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedAdminAdminThemaRoute =
   AuthenticatedAdminAdminThemaRouteImport.update({
     id: '/admin/thema',
@@ -287,6 +294,7 @@ export interface FileRoutesByFullPath {
   '/admin/review-professionals': typeof AuthenticatedAdminAdminReviewProfessionalsRoute
   '/admin/reviews': typeof AuthenticatedAdminAdminReviewsRoute
   '/admin/thema': typeof AuthenticatedAdminAdminThemaRoute
+  '/dashboard/berichten/$jobId': typeof AuthenticatedDashboardBerichtenJobIdRoute
   '/dashboard/projecten/$jobId': typeof AuthenticatedDashboardProjectenJobIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/admin/': typeof AuthenticatedAdminAdminIndexRoute
@@ -322,6 +330,7 @@ export interface FileRoutesByTo {
   '/admin/review-professionals': typeof AuthenticatedAdminAdminReviewProfessionalsRoute
   '/admin/reviews': typeof AuthenticatedAdminAdminReviewsRoute
   '/admin/thema': typeof AuthenticatedAdminAdminThemaRoute
+  '/dashboard/berichten/$jobId': typeof AuthenticatedDashboardBerichtenJobIdRoute
   '/dashboard/projecten/$jobId': typeof AuthenticatedDashboardProjectenJobIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/admin': typeof AuthenticatedAdminAdminIndexRoute
@@ -363,6 +372,7 @@ export interface FileRoutesById {
   '/_authenticated/_admin/admin/review-professionals': typeof AuthenticatedAdminAdminReviewProfessionalsRoute
   '/_authenticated/_admin/admin/reviews': typeof AuthenticatedAdminAdminReviewsRoute
   '/_authenticated/_admin/admin/thema': typeof AuthenticatedAdminAdminThemaRoute
+  '/_authenticated/dashboard/berichten/$jobId': typeof AuthenticatedDashboardBerichtenJobIdRoute
   '/_authenticated/dashboard/projecten/$jobId': typeof AuthenticatedDashboardProjectenJobIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/_authenticated/_admin/admin/': typeof AuthenticatedAdminAdminIndexRoute
@@ -403,6 +413,7 @@ export interface FileRouteTypes {
     | '/admin/review-professionals'
     | '/admin/reviews'
     | '/admin/thema'
+    | '/dashboard/berichten/$jobId'
     | '/dashboard/projecten/$jobId'
     | '/api/public/payments/webhook'
     | '/admin/'
@@ -438,6 +449,7 @@ export interface FileRouteTypes {
     | '/admin/review-professionals'
     | '/admin/reviews'
     | '/admin/thema'
+    | '/dashboard/berichten/$jobId'
     | '/dashboard/projecten/$jobId'
     | '/api/public/payments/webhook'
     | '/admin'
@@ -478,6 +490,7 @@ export interface FileRouteTypes {
     | '/_authenticated/_admin/admin/review-professionals'
     | '/_authenticated/_admin/admin/reviews'
     | '/_authenticated/_admin/admin/thema'
+    | '/_authenticated/dashboard/berichten/$jobId'
     | '/_authenticated/dashboard/projecten/$jobId'
     | '/api/public/payments/webhook'
     | '/_authenticated/_admin/admin/'
@@ -708,6 +721,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardProjectenJobIdRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/berichten/$jobId': {
+      id: '/_authenticated/dashboard/berichten/$jobId'
+      path: '/berichten/$jobId'
+      fullPath: '/dashboard/berichten/$jobId'
+      preLoaderRoute: typeof AuthenticatedDashboardBerichtenJobIdRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/_admin/admin/thema': {
       id: '/_authenticated/_admin/admin/thema'
       path: '/admin/thema'
@@ -831,6 +851,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardLeadsRoute: typeof AuthenticatedDashboardLeadsRoute
   AuthenticatedDashboardReviewsRoute: typeof AuthenticatedDashboardReviewsRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+  AuthenticatedDashboardBerichtenJobIdRoute: typeof AuthenticatedDashboardBerichtenJobIdRoute
   AuthenticatedDashboardProjectenJobIdRoute: typeof AuthenticatedDashboardProjectenJobIdRoute
   AuthenticatedDashboardBerichtenIndexRoute: typeof AuthenticatedDashboardBerichtenIndexRoute
   AuthenticatedDashboardProjectenIndexRoute: typeof AuthenticatedDashboardProjectenIndexRoute
@@ -845,6 +866,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardLeadsRoute: AuthenticatedDashboardLeadsRoute,
     AuthenticatedDashboardReviewsRoute: AuthenticatedDashboardReviewsRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+    AuthenticatedDashboardBerichtenJobIdRoute:
+      AuthenticatedDashboardBerichtenJobIdRoute,
     AuthenticatedDashboardProjectenJobIdRoute:
       AuthenticatedDashboardProjectenJobIdRoute,
     AuthenticatedDashboardBerichtenIndexRoute:
