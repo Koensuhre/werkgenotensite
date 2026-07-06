@@ -8,6 +8,7 @@ import {
   CreditCard,
   TrendingUp,
 } from "lucide-react";
+import { SubscriptionBanner } from "@/components/SubscriptionBanner";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -50,6 +51,7 @@ function DashboardLayout() {
           </nav>
         </aside>
         <div>
+          <SubscriptionBanner />
           <Outlet />
         </div>
       </div>
