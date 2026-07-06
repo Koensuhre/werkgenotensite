@@ -7,6 +7,7 @@ import { useSession } from "@/hooks/use-session";
 import { useIsAdmin } from "@/hooks/use-current-profile";
 import { supabase } from "@/integrations/supabase/client";
 import { cmsMenuQuery, cmsPagesListQuery } from "@/services/wpgraphql";
+import logoUrl from "@/assets/werkgenoten-logo.svg";
 
 const fallbackNav = [
   { to: "/opdrachten", label: "Opdrachten" },
@@ -62,10 +63,7 @@ export function SiteHeader() {
       <div className="glass border-b border-border/60">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand-gradient text-brand-foreground shadow-glow">
-              <span className="text-sm font-bold">Wq</span>
-            </span>
-            <span className="text-base">Werkgenoten</span>
+            <img src={logoUrl} alt="Werkgenoten" className="h-9 w-auto" />
           </Link>
           <nav className="hidden items-center gap-1 md:flex">
             {nav.map((n) => (
