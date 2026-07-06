@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ArrowLeft, MessageCircle, Star, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -120,8 +120,10 @@ function ProjectDetail() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Project afgerond");
+      toast.success("Project afgerond — laat een review achter");
       qc.invalidateQueries({ queryKey: ["job-detail", jobId] });
+      qc.invalidateQueries({ queryKey: ["job-quotes", jobId] });
+      qc.invalidateQueries({ queryKey: ["job-review", jobId, user?.id] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -130,6 +132,16 @@ function ProjectDetail() {
   const quotes = quotesQ.data ?? [];
   const acceptedQuote = quotes.find((q) => q.status === "accepted");
 
+  const reviewRef = useRef<HTMLDivElement | null>(null);
+  const isOwner = job?.client_id === user?.id;
+  const canReview =
+    !!isOwner && job?.status === "completed" && !reviewQ.data && !!(job?.awarded_pro_id ?? acceptedQuote?.pro_id);
+  useEffect(() => {
+    if (canReview && reviewRef.current) {
+      reviewRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [canReview]);
+
   if (jobQ.isLoading) return <div className="text-sm text-muted-foreground">Laden…</div>;
   if (!job)
     return (
@@ -137,8 +149,6 @@ function ProjectDetail() {
         Project niet gevonden.
       </div>
     );
-
-  const isOwner = job.client_id === user?.id;
 
   return (
     <div>
@@ -187,12 +197,15 @@ function ProjectDetail() {
       )}
 
       {isOwner && job.status === "completed" && (
-        <ReviewSection
-          jobId={jobId}
-          proId={job.awarded_pro_id ?? acceptedQuote?.pro_id ?? null}
-          existing={reviewQ.data ?? null}
-          onSubmitted={() => qc.invalidateQueries({ queryKey: ["job-review", jobId, user?.id] })}
-        />
+        <div ref={reviewRef}>
+          <ReviewSection
+            jobId={jobId}
+            proId={job.awarded_pro_id ?? acceptedQuote?.pro_id ?? null}
+            proName={acceptedQuote?.pro?.company ?? acceptedQuote?.pro?.display_name ?? null}
+            existing={reviewQ.data ?? null}
+            onSubmitted={() => qc.invalidateQueries({ queryKey: ["job-review", jobId, user?.id] })}
+          />
+        </div>
       )}
 
       <h2 className="mt-8 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
@@ -290,11 +303,13 @@ function ProjectDetail() {
 function ReviewSection({
   jobId,
   proId,
+  proName,
   existing,
   onSubmitted,
 }: {
   jobId: string;
   proId: string | null;
+  proName: string | null;
   existing: { id: string; rating: number; body: string | null; created_at: string } | null;
   onSubmitted: () => void;
 }) {
@@ -336,7 +351,12 @@ function ReviewSection({
 
   return (
     <div className="mt-6 rounded-xl border border-border/60 bg-card-gradient p-5">
-      <div className="text-sm font-medium">Laat een review achter</div>
+      <div className="text-sm font-medium">
+        Beoordeel {proName ?? "de vakman"}
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Je project is afgerond — deel je ervaring zodat andere klanten weten wat ze mogen verwachten.
+      </p>
       <div className="mt-2 flex gap-1">
         {[1, 2, 3, 4, 5].map((n) => (
           <button key={n} type="button" onClick={() => setRating(n)}>
