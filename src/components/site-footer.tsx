@@ -8,7 +8,7 @@ export function SiteFooter() {
         <div className="grid gap-12 md:grid-cols-5">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 font-semibold">
-              <img src={logoUrl} alt="Werkgenoten" className="h-9 w-auto" />
+              <img src={logoUrl} alt="Werkgenoten" className="h-12 w-auto" />
             </div>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
               Het premium marktplatform voor opdrachtgevers en gecontroleerde vakmensen in Nederland.

@@ -63,7 +63,7 @@ export function SiteHeader() {
       <div className="glass border-b border-border/60">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
-            <img src={logoUrl} alt="Werkgenoten" className="h-9 w-auto" />
+            <img src={logoUrl} alt="Werkgenoten" className="h-12 w-auto" />
           </Link>
           <nav className="hidden items-center gap-1 md:flex">
             {nav.map((n) => (
