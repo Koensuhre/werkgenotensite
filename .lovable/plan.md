@@ -1,84 +1,100 @@
-# Openstaande punten Werkgenoten — prioriteitsroadmap
 
-Op basis van een audit van routes, DB-tabellen, mocks en integraties. Gegroepeerd van blokkerend → nice-to-have. Elk item = een aparte vervolgtaak die we los kunnen bouwen.
+## P0.3 — Volgorde: eerst subscription end-to-end, daarna kernflow klant↔vakman
 
-## P0 — Blokkerend voor lancering
+Elk blok is één beurt met migratie + code. Ik wacht je "ok" tussen A en B.
 
-### 1. Mock-data vervangen door echte data
-Op meerdere plekken staat nog `src/lib/mock-data.ts`:
-- **Homepage** (`routes/index.tsx`) — testimonials, stats, plans, categorieën.
-- **Prijzen** (`routes/prijzen.tsx`) — plannen hardcoded i.p.v. Stripe.
-- **Dashboard abonnement** (`routes/_authenticated/dashboard.abonnement.tsx`) — toont mock-plan, niet de echte `subscriptions`-rij.
+---
 
-Aanpak: categorieën uit `categories`-tabel (met live job-count), testimonials uit `reviews`-tabel (top-rated), stats uit aggregaties. `mock-data.ts` daarna verwijderen.
+## Blok A — Subscription end-to-end audit
 
-### 2. Stripe abonnementen end-to-end
-- Prijzen komen uit Stripe products/prices (via `lookup_key`), niet uit code.
-- Checkout → succes → `subscriptions`-rij zichtbaar in dashboard.
-- Upgrade / downgrade / opzeggen via Stripe Billing Portal (`createPortalSession`).
-- `useSubscription` hook consequent gebruiken (incl. `environment` filter) om premium features te gaten.
-- Dunning-banner bij `past_due`, grace-period tot `current_period_end` bij `canceled`.
+**Doel:** vanaf klik op "Kies plan" tot en met feature-gating in de app werkt de volledige lus, met correcte polling na return, gates op pro-only features, en nette upgrade/downgrade.
 
-### 3. Kernflow klant ↔ vakman afmaken
-De DB-tabellen bestaan (`jobs`, `quotes`, `messages`, `reviews`), maar de UI-flow is incompleet:
+### A1. `checkout/return` – polling op subscription
+- Vervang statische "Bedankt" door polling: `useSubscription` refetchen tot `isActive` of 10 s time-out.
+- States: Bezig met verwerken → Bedankt (met plan-naam) → Fallback ("nog niet zichtbaar, check dashboard").
+- Toont plan-naam via `usePlans()` gejoined op `price_id`.
 
-- **Offerte uitbrengen** — vakman ziet job, plaatst quote via UI (nu waarschijnlijk alleen data, geen scherm).
-- **Offerte accepteren/afwijzen** — klant kiest quote → job krijgt `pro_id`, status → `in_progress`.
-- **Berichten** (`dashboard.berichten.tsx`, 56 regels) — realtime thread per job, ongelezen-badge, notificatie.
-- **Project afronden** — vakman markeert `completed` → klant krijgt prompt voor review.
-- **Reviews plaatsen** — na `completed` job, koppelt aan `validate_review_job` trigger.
-- **Leads** (`dashboard.leads.tsx`, 48 regels) — filter jobs op categorie/regio van vakman, "toon interesse".
+### A2. Reusable `<RequireSubscription />` gate
+- Nieuw component `src/components/RequireSubscription.tsx`.
+- Rendert children als `isActive`, anders een upgrade-card met CTA naar `/dashboard/abonnement`.
+- Optionele `allowedPriceIds` voor tier-gating.
 
-### 4. Notificaties werkend maken
-`notifications`-tabel bestaat maar wordt niet gevuld/getoond:
-- Trigger bij nieuwe quote, quote-accept, nieuw bericht, review-goedkeuring, job-completed.
-- Bell-icoon in header met ongelezen-teller (realtime subscribe).
-- E-mail notificatie voor kritieke events (via Lovable Email).
+### A3. Pro-only gates
+- `dashboard/leads`: alleen professionals mét actief abonnement zien de volledige lijst. Anders upgrade-card. Client-side gate (server-side RLS blijft in blok B als quotes worden gebouwd).
+- `word-professional`: geen gate, blijft marketing.
+- Server-side helper: gebruik bestaande `has_active_subscription()` SQL function (bestaat al volgens knowledge-file, checken; anders migratie toevoegen).
 
-## P1 — Belangrijk voor kwaliteit
+### A4. Voorkom duplicate checkout
+- In `prijzen` en `dashboard/abonnement`: als `isActive` én zelfde `price_id` → knop = "Huidig plan" (disabled) — al deels aanwezig, aanvullen voor `prijzen`.
 
-### 5. E-mail configuratie
-- Auth-mails (welkom, wachtwoord-reset, e-mail-verificatie) met eigen branding.
-- Transactionele mails: nieuwe quote, quote-geaccepteerd, review-verzoek, admin-goedkeuring.
-- Custom domain koppelen (werkgenoten.nl of subdomein).
+### A5. Verificatie
+- Manuele smoke test via Playwright: click "Kies plan" (ingelogd), test-card `4242…`, return-page ziet abonnement worden.
+- Tsgo check.
 
-### 6. Google OAuth verificeren
-Code gebruikt `lovable.auth.signInWithOAuth("google", ...)` — controleren of provider daadwerkelijk is geconfigureerd via `configure_social_auth`; anders faalt eerste login met "Unsupported provider".
+**Bestanden A:**
+- edit `src/routes/checkout.return.tsx`
+- new `src/components/RequireSubscription.tsx`
+- edit `src/routes/_authenticated/dashboard.leads.tsx`
+- edit `src/routes/prijzen.tsx` (huidig-plan disable + login-redirect met next-param)
+- (evt.) migratie voor `has_active_subscription` als die ontbreekt
 
-### 7. Admin-flow completeren
-- Notificatie/mail naar user bij goedkeuring/afwijzing professional-profiel.
-- Reden van afwijzing zichtbaar voor user in dashboard.
-- Bulk-acties (meerdere reviews tegelijk goedkeuren).
+---
 
-### 8. SEO polish
-- Unieke `og:image` per leaf-route (opdracht-detail, vakman-detail, CMS-pagina) — nu ontbreekt bijna overal.
-- JSON-LD: `LocalBusiness` op vakman-pagina, `JobPosting` op opdracht-pagina, `BreadcrumbList` op detail-pagina's.
-- Sitemap.xml + robots.txt genereren.
+## Blok B — Kernflow klant ↔ vakman
 
-### 9. Deploy-config afronden
-`.lovable/plan.md` beschrijft Vercel-fix (Nitro preset `vercel`, `api/index.ts` verwijderen, `.nvmrc`, README). Verifiëren of dat is toegepast of nog moet gebeuren.
+**Doel:** de daadwerkelijke transactie op de marktplaats werkt end-to-end. Alles gate't op auth + waar relevant op subscription.
 
-## P2 — Nice-to-have
+### B1. Offerte uitbrengen (pro → job)
+- Op `/opdrachten/$slug`: knop "Offerte versturen" opent dialog met `amount` + `message`.
+- Server function `submitQuote` (createServerFn + requireSupabaseAuth): insert in `quotes` met `pro_id = auth.uid()`, `status='pending'`.
+- Gate: pro-role + actief abonnement (via `has_active_subscription`) — anders 403 / upgrade-card.
+- Zichtbaarheid: eigenaar (client van job) én pro zelf zien hun quote(s).
 
-### 10. Favorieten UI
-Tabel `favorites` bestaat, geen zichtbare knop op vakman-detail of lijst met favorieten in dashboard.
+### B2. Offerte accepteren/afwijzen (client)
+- Nieuwe route `_authenticated/dashboard/projecten.$jobId` — client ziet lijst quotes met accept/decline knoppen.
+- Server function `respondQuote`: update `quotes.status`. On accept: job status → `in_progress`, quote → `accepted`, overige quotes → `rejected`. In één transactie via RPC.
 
-### 11. Zoekbalk werkend maken
-Op `opdrachten.tsx` en `vakmensen.tsx` staat een input maar geen filter-logica erachter.
+### B3. Berichten (realtime)
+- Nieuwe route `_authenticated/dashboard/berichten.$jobId` (of gebruik bestaande `berichten` als lijst).
+- Insert/select op `messages` met `job_id`.
+- Supabase realtime channel per `job_id`, filter op deelnemers (RLS bestaat al).
+- Autoscroll, nieuw-bericht badge in nav.
 
-### 12. Profiel-onboarding voor professionals
-Wizard: bedrijfsgegevens → categorieën → tarieven → portfolio-foto's → verzenden voor review. Nu is `admin.paginas.$slug.tsx` de enige plek waar veel form-velden staan; professional zelf heeft geen guided flow.
+### B4. Project afronden + review
+- Op accepted job: client kan "Afronden" klikken → `jobs.status='completed'`, `completed_at=now()`.
+- Vervolgens review-form (rating 1-5 + body) → insert `reviews`.
+- Trigger `validate_review_job` bestaat al — mooi.
+- Update `profiles.rating_avg` en `review_count` via SQL trigger (nieuw).
 
-### 13. Foto-upload voor jobs en portfolio
-Geen storage-buckets aanwezig (`storage-buckets: none`). Nodig voor: portfolio-foto's professional, foto's bij opdracht.
+### B5. Berichten-lijst + notificatie-badge
+- `dashboard/berichten` toont laatste conversatie per job.
+- Ongelezen-count via `messages.read_at IS NULL AND recipient = auth.uid()`.
 
-### 14. Analytics / dashboard-cijfers
-`dashboard.index.tsx` toont waarschijnlijk statische cijfers — koppelen aan echte counts (open leads, actieve projecten, gemiddelde review).
+### B6. Verificatie
+- E2E via Playwright: pro logt in → offerte op job → client accepteert → berichten heen-en-weer → client rond af → review geplaatst → rating zichtbaar op vakmensen-profiel.
+- Tsgo check.
 
-## Volgorde-advies
+**Bestanden B (indicatief):**
+- new `src/lib/marketplace.functions.ts` (submitQuote, respondQuote, sendMessage, completeJob, submitReview)
+- new/edit `src/routes/opdrachten.$slug.tsx` (offerte-dialog + auth-gate)
+- new `src/routes/_authenticated/dashboard/projecten.$jobId.tsx`
+- new/edit `src/routes/_authenticated/dashboard/berichten.$jobId.tsx`
+- edit `src/routes/_authenticated/dashboard.berichten.tsx` (lijst)
+- edit `src/components/site-header.tsx` (unread badge)
+- migratie: `accept_quote(quote_id)` RPC (transactionele accept+reject+in_progress), trigger `refresh_pro_rating` na reviews-insert
+- (indien nodig) grants/policies aanvullen
 
-Start met **P0.1 (mocks weg)** en **P0.3 (kernflow)** — zonder deze werkt het platform functioneel niet. Daarna **P0.2 (Stripe)** zodat er geld binnenkomt, dan **P0.4 (notificaties)** voor engagement. P1 en P2 kunnen daarna incrementeel.
+---
 
-## Wat wil je dat ik doe
+## Aannames
+- Bestaande tabellen (`jobs`, `quotes`, `messages`, `reviews`, `subscriptions`) en RLS worden hergebruikt zoals ze zijn. Alleen aanvullingen waar hierboven expliciet genoemd.
+- Alleen professionals met actief abonnement mogen offertes uitbrengen — bevestig als dit anders moet zijn.
+- Reviews: elke completed job levert exact één review per (client,pro) op, in de dagen na afronding — bestaande trigger enforced dit.
+- UI-taal blijft NL, dezelfde design-tokens en shadcn-componenten.
 
-Zeg welk P0-blok ik als eerste ga bouwen (bv. "start met P0.1" of "doe P0.3 quote-flow"), dan maak ik daar een concreet implementatieplan van met bestanden, migraties en UI-schermen.
+## Vragen voor je "go"
+1. **Gating leads/offerte:** alleen actieve abonnees, of ook trial/free tier? *(default: actieve abonnees)*
+2. **Berichten:** ook toegestaan vóór accepted offerte (vraag stellen), of pas na accept? *(default: altijd, zoals nu op job-detail met "Stel een vraag")*
+3. **Project afronden:** alleen client kan afronden, of ook pro (met bevestiging door client)? *(default: alleen client)*
+
+Zeg "start A" om blok A te bouwen (met bovenstaande defaults tenzij je aanpast), of geef feedback.

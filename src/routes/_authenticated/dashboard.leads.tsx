@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useJobs, formatBudget, timeAgo } from "@/lib/queries";
+import { RequireSubscription } from "@/components/RequireSubscription";
 
 export const Route = createFileRoute("/_authenticated/dashboard/leads")({
   component: Leads,
@@ -9,7 +10,11 @@ function Leads() {
   const { data: jobs = [], isLoading } = useJobs();
 
   return (
-    <div>
+    <RequireSubscription
+      title="Leads zijn voor Professional-leden"
+      description="Neem een abonnement om alle openstaande opdrachten in jouw regio te zien en te reageren."
+    >
+     <div>
       <h1 className="text-2xl font-semibold">Leads</h1>
       <p className="text-sm text-muted-foreground">
         Openstaande opdrachten in jouw vakgebied en regio.
@@ -43,6 +48,7 @@ function Leads() {
           </div>
         ))}
       </div>
-    </div>
+     </div>
+    </RequireSubscription>
   );
 }
