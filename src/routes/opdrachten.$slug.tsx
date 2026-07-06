@@ -1,6 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, MapPin, Clock, Euro, Star, Shield, MessageCircle } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, MapPin, Clock, Euro, Shield, MessageCircle } from "lucide-react";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { useJob, formatBudget, timeAgo } from "@/lib/queries";
+import { useSession } from "@/hooks/use-session";
+import { useCurrentProfile } from "@/hooks/use-current-profile";
+import { useHasActiveSubscription } from "@/hooks/use-subscription";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/opdrachten/$slug")({
   head: ({ params }) => ({
@@ -26,6 +33,40 @@ export const Route = createFileRoute("/opdrachten/$slug")({
 function JobDetail() {
   const { slug } = Route.useParams();
   const { data: job, isLoading } = useJob(slug);
+  const { user } = useSession();
+  const { data: profile } = useCurrentProfile();
+  const { isActive } = useHasActiveSubscription();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+  const [quoteOpen, setQuoteOpen] = useState(false);
+  const [amount, setAmount] = useState("");
+  const [message, setMessage] = useState("");
+
+  const submitQuote = useMutation({
+    mutationFn: async () => {
+      if (!job) throw new Error("Opdracht niet geladen");
+      const amt = Number(amount);
+      if (!Number.isFinite(amt) || amt <= 0) throw new Error("Vul een geldig bedrag in");
+      const { error } = await supabase.rpc("submit_quote", {
+        _job_id: job.id,
+        _amount: Math.round(amt),
+        _message: message,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Offerte verzonden");
+      setQuoteOpen(false);
+      setAmount("");
+      setMessage("");
+      qc.invalidateQueries({ queryKey: ["job", slug] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const isPro = profile?.primary_type === "professional";
+  const isOwner = job && user?.id === job.client_id;
+  const canQuote = !!user && isPro && isActive && !isOwner && job?.status === "open";
 
   if (isLoading) {
     return (
@@ -107,12 +148,61 @@ function JobDetail() {
             <div className="mt-1 text-2xl font-semibold">
               {formatBudget(job.budget_min, job.budget_max)}
             </div>
-            <button className="mt-5 w-full rounded-lg bg-brand-gradient px-4 py-2.5 text-sm font-medium text-brand-foreground shadow-glow">
-              Offerte versturen
-            </button>
-            <button className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-surface/60 px-4 py-2.5 text-sm font-medium hover:bg-surface-2">
-              <MessageCircle className="h-4 w-4" /> Stel een vraag
-            </button>
+            {isOwner ? (
+              <Link
+                to="/dashboard/projecten/$jobId"
+                params={{ jobId: job.id }}
+                className="mt-5 block w-full rounded-lg bg-brand-gradient px-4 py-2.5 text-center text-sm font-medium text-brand-foreground shadow-glow"
+              >
+                Beheer je project
+              </Link>
+            ) : !user ? (
+              <Link
+                to="/auth"
+                className="mt-5 block w-full rounded-lg bg-brand-gradient px-4 py-2.5 text-center text-sm font-medium text-brand-foreground shadow-glow"
+              >
+                Log in om te reageren
+              </Link>
+            ) : canQuote ? (
+              <button
+                onClick={() => setQuoteOpen(true)}
+                className="mt-5 w-full rounded-lg bg-brand-gradient px-4 py-2.5 text-sm font-medium text-brand-foreground shadow-glow"
+              >
+                Offerte versturen
+              </button>
+            ) : isPro && !isActive ? (
+              <Link
+                to="/dashboard/abonnement"
+                className="mt-5 block w-full rounded-lg bg-brand-gradient px-4 py-2.5 text-center text-sm font-medium text-brand-foreground shadow-glow"
+              >
+                Abonnement nodig om offerte te versturen
+              </Link>
+            ) : !isPro ? (
+              <Link
+                to="/word-professional"
+                className="mt-5 block w-full rounded-lg bg-brand-gradient px-4 py-2.5 text-center text-sm font-medium text-brand-foreground shadow-glow"
+              >
+                Word Werkgenoot om te reageren
+              </Link>
+            ) : (
+              <div className="mt-5 text-center text-xs text-muted-foreground">
+                Deze opdracht is niet meer open.
+              </div>
+            )}
+            {user && !isOwner && (
+              <button
+                onClick={() =>
+                  navigate({
+                    to: "/dashboard/berichten/$jobId",
+                    params: { jobId: job.id },
+                    search: { with: job.client_id },
+                  })
+                }
+                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-surface/60 px-4 py-2.5 text-sm font-medium hover:bg-surface-2"
+              >
+                <MessageCircle className="h-4 w-4" /> Stel een vraag
+              </button>
+            )}
             <div className="mt-5 border-t border-border/60 pt-4 text-xs">
               <div className="font-medium">Opdrachtgever</div>
               <div className="mt-2 flex items-center gap-2">
@@ -133,6 +223,54 @@ function JobDetail() {
           </div>
         </aside>
       </div>
+      {quoteOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          onClick={() => setQuoteOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-2xl border border-border/60 bg-card-gradient p-6 shadow-card"
+          >
+            <h3 className="text-lg font-semibold">Offerte versturen</h3>
+            <p className="mt-1 text-xs text-muted-foreground">
+              De opdrachtgever ziet je bedrag, bericht en profiel.
+            </p>
+            <label className="mt-4 block text-xs font-medium">Bedrag (€, excl. btw)</label>
+            <input
+              type="number"
+              min={1}
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="bijv. 850"
+              className="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm"
+            />
+            <label className="mt-3 block text-xs font-medium">Bericht (optioneel)</label>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              rows={4}
+              placeholder="Leg kort uit wat je aanpak is."
+              className="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm"
+            />
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                onClick={() => setQuoteOpen(false)}
+                className="rounded-lg border border-border px-4 py-2 text-sm"
+              >
+                Annuleren
+              </button>
+              <button
+                onClick={() => submitQuote.mutate()}
+                disabled={submitQuote.isPending}
+                className="rounded-lg bg-brand-gradient px-4 py-2 text-sm font-medium text-brand-foreground disabled:opacity-50"
+              >
+                Verstuur offerte
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
