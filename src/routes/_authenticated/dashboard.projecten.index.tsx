@@ -60,8 +60,8 @@ function Projecten() {
           return (
             <Link
               key={j.id}
-              to="/opdrachten/$slug"
-              params={{ slug: j.slug }}
+              to="/dashboard/projecten/$jobId"
+              params={{ jobId: j.id }}
               className="bg-card-gradient shadow-card block rounded-lg border border-border/60 p-4 hover:border-brand/40"
             >
               <div className="flex items-center justify-between gap-3">
