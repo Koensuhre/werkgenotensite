@@ -244,6 +244,7 @@ function HowItWorks() {
 
 function Categories() {
   const { data: categories = [] } = useCategories();
+  const { data: counts } = useCategoryCounts();
   return (
     <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -260,7 +261,9 @@ function Categories() {
         </Link>
       </div>
       <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-        {categories.map((c) => (
+        {categories.map((c) => {
+          const openCount = counts?.get(c.id) ?? 0;
+          return (
           <Link
             key={c.slug}
             to="/vakmensen"
@@ -271,9 +274,13 @@ function Categories() {
             {c.description && (
               <div className="mt-1 text-xs text-muted-foreground line-clamp-1">{c.description}</div>
             )}
+            <div className="mt-2 text-xs text-brand">
+              {openCount > 0 ? `${openCount} open opdrachten` : "Nog geen opdrachten"}
+            </div>
             <ArrowRight className="absolute right-4 top-4 h-4 w-4 text-muted-foreground opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-0.5" />
           </Link>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
