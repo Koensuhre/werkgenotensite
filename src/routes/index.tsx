@@ -8,7 +8,6 @@ import {
   useHomeStats,
   useTopReviews,
   usePlans,
-  initialsOf,
   formatBudget,
   timeAgo,
 } from "@/lib/queries";
