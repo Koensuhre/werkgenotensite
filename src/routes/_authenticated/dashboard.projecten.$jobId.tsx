@@ -303,11 +303,13 @@ function ProjectDetail() {
 function ReviewSection({
   jobId,
   proId,
+  proName,
   existing,
   onSubmitted,
 }: {
   jobId: string;
   proId: string | null;
+  proName: string | null;
   existing: { id: string; rating: number; body: string | null; created_at: string } | null;
   onSubmitted: () => void;
 }) {
@@ -349,7 +351,12 @@ function ReviewSection({
 
   return (
     <div className="mt-6 rounded-xl border border-border/60 bg-card-gradient p-5">
-      <div className="text-sm font-medium">Laat een review achter</div>
+      <div className="text-sm font-medium">
+        Beoordeel {proName ?? "de vakman"}
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Je project is afgerond — deel je ervaring zodat andere klanten weten wat ze mogen verwachten.
+      </p>
       <div className="mt-2 flex gap-1">
         {[1, 2, 3, 4, 5].map((n) => (
           <button key={n} type="button" onClick={() => setRating(n)}>
