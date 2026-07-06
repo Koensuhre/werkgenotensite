@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { listPlans, type PlanDTO } from "@/lib/payments.functions";
+import { getStripeEnvironment } from "@/lib/stripe";
 
 // ---------- Categories ----------
 export function useCategories() {
@@ -212,4 +214,147 @@ export function timeAgo(iso: string) {
   const d = Math.floor(h / 24);
   if (d < 7) return `${d} ${d === 1 ? "dag" : "dagen"} geleden`;
   return new Date(iso).toLocaleDateString("nl-NL");
+}
+
+// ---------- Stats (homepage) ----------
+export type HomeStats = {
+  jobsCount: number;
+  prosCount: number;
+  reviewsCount: number;
+  avgRating: number;
+};
+
+export function useHomeStats() {
+  return useQuery({
+    queryKey: ["home-stats"],
+    staleTime: 10 * 60_000,
+    queryFn: async (): Promise<HomeStats> => {
+      const [jobs, pros, reviewsCount, ratingsSample] = await Promise.all([
+        supabase.from("jobs").select("*", { count: "exact", head: true }),
+        supabase
+          .from("profiles")
+          .select("*", { count: "exact", head: true })
+          .eq("primary_type", "professional"),
+        supabase.from("reviews").select("*", { count: "exact", head: true }),
+        supabase.from("reviews").select("rating").limit(1000),
+      ]);
+      const ratings = (ratingsSample.data ?? []) as { rating: number }[];
+      const avg =
+        ratings.length > 0
+          ? ratings.reduce((sum, r) => sum + (r.rating ?? 0), 0) / ratings.length
+          : 0;
+      return {
+        jobsCount: jobs.count ?? 0,
+        prosCount: pros.count ?? 0,
+        reviewsCount: reviewsCount.count ?? 0,
+        avgRating: Math.round(avg * 10) / 10,
+      };
+    },
+  });
+}
+
+// ---------- Top reviews (testimonials) ----------
+export type TestimonialRow = {
+  id: string;
+  rating: number;
+  body: string | null;
+  created_at: string;
+  client: { display_name: string | null; city: string | null } | null;
+  pro: { display_name: string | null; company: string | null } | null;
+};
+
+export function useTopReviews(limit = 4) {
+  return useQuery({
+    queryKey: ["top-reviews", limit],
+    staleTime: 10 * 60_000,
+    queryFn: async (): Promise<TestimonialRow[]> => {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("id, rating, body, created_at, client_id, pro_id")
+        .not("body", "is", null)
+        .order("rating", { ascending: false })
+        .order("created_at", { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      const rows = (data ?? []) as {
+        id: string;
+        rating: number;
+        body: string | null;
+        created_at: string;
+        client_id: string;
+        pro_id: string;
+      }[];
+      const ids = Array.from(new Set([...rows.map((r) => r.client_id), ...rows.map((r) => r.pro_id)]));
+      if (!ids.length) return [];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, display_name, city, company")
+        .in("id", ids);
+      const byId = new Map(
+        (profiles ?? []).map((p) => [
+          p.id,
+          { display_name: p.display_name, city: p.city, company: p.company },
+        ]),
+      );
+      return rows.map((r) => ({
+        id: r.id,
+        rating: r.rating,
+        body: r.body,
+        created_at: r.created_at,
+        client: byId.get(r.client_id)
+          ? {
+              display_name: byId.get(r.client_id)!.display_name,
+              city: byId.get(r.client_id)!.city,
+            }
+          : null,
+        pro: byId.get(r.pro_id)
+          ? {
+              display_name: byId.get(r.pro_id)!.display_name,
+              company: byId.get(r.pro_id)!.company,
+            }
+          : null,
+      }));
+    },
+  });
+}
+
+// ---------- Category counts (open jobs per category) ----------
+export function useCategoryCounts() {
+  return useQuery({
+    queryKey: ["category-counts"],
+    staleTime: 5 * 60_000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("jobs")
+        .select("category_id")
+        .eq("status", "open")
+        .not("category_id", "is", null);
+      if (error) throw error;
+      const map = new Map<string, number>();
+      for (const row of (data ?? []) as { category_id: string | null }[]) {
+        if (!row.category_id) continue;
+        map.set(row.category_id, (map.get(row.category_id) ?? 0) + 1);
+      }
+      return map;
+    },
+  });
+}
+
+// ---------- Subscription plans (from Stripe) ----------
+export function usePlans() {
+  return useQuery({
+    queryKey: ["subscription-plans"],
+    staleTime: 5 * 60_000,
+    queryFn: async (): Promise<PlanDTO[]> => {
+      let env: "sandbox" | "live";
+      try {
+        env = getStripeEnvironment();
+      } catch {
+        return [];
+      }
+      const result = await listPlans({ data: { environment: env } });
+      if ("error" in result) throw new Error(result.error);
+      return result.plans;
+    },
+  });
 }
