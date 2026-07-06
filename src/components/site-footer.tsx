@@ -11,7 +11,8 @@ export function SiteFooter() {
               <img src={logoUrl} alt="Werkgenoten" className="h-20 w-auto" />
             </div>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              Het premium marktplatform voor opdrachtgevers en gecontroleerde vakmensen in Nederland.
+              Het premium marktplatform voor opdrachtgevers en gecontroleerde vakmensen in
+              Nederland.
             </p>
           </div>
           <div>
@@ -48,7 +49,10 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <a className="hover:text-foreground" href="https://werkgenoten-a92fcbbb.vercel.app/over-ons">
+                <a
+                  className="hover:text-foreground"
+                  href="https://werkgenoten-a92fcbbb.vercel.app/over-ons"
+                >
                   Over ons
                 </a>
               </li>

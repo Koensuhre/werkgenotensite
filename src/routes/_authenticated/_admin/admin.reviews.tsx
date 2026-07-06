@@ -52,14 +52,20 @@ function AdminReviews() {
                 ))}
               </div>
               <button
-                onClick={() => { if (confirm("Verwijderen?")) remove.mutate(r.id); }}
+                onClick={() => {
+                  if (confirm("Verwijderen?")) remove.mutate(r.id);
+                }}
                 className="text-xs text-destructive hover:underline"
               >
                 Verwijderen
               </button>
             </div>
-            <p className="mt-2 text-sm">{r.body ?? <span className="text-muted-foreground">Geen tekst.</span>}</p>
-            <p className="mt-2 text-xs text-muted-foreground">{new Date(r.created_at).toLocaleString("nl-NL")}</p>
+            <p className="mt-2 text-sm">
+              {r.body ?? <span className="text-muted-foreground">Geen tekst.</span>}
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {new Date(r.created_at).toLocaleString("nl-NL")}
+            </p>
           </div>
         ))}
       </div>

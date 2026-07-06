@@ -30,7 +30,7 @@ const theme: ThemeTokens = {
   typography: {
     fontSans: '"Inter", ui-sans-serif, system-ui, sans-serif',
     fontDisplay: '"Inter", ui-sans-serif, system-ui, sans-serif',
-    fontMono: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+    fontMono: "ui-monospace, SFMono-Regular, Menlo, monospace",
     headingWeight: "600",
     bodyWeight: "400",
     baseSize: "16px",
@@ -46,7 +46,11 @@ const theme: ThemeTokens = {
     shadowCard: "0 1px 0 0 oklch(1 0 0 / 0.04) inset, 0 0 0 1px oklch(1 0 0 / 0.04)",
   },
   buttons: { radius: "0.5rem", paddingX: "1rem", paddingY: "0.5rem" },
-  cards: { radius: "0.75rem", background: "oklch(0.20 0.014 270)", shadow: "0 1px 0 0 oklch(1 0 0 / 0.04) inset" },
+  cards: {
+    radius: "0.75rem",
+    background: "oklch(0.20 0.014 270)",
+    shadow: "0 1px 0 0 oklch(1 0 0 / 0.04) inset",
+  },
 };
 
 const pages: Record<string, CmsPage> = {
@@ -60,9 +64,19 @@ const pages: Record<string, CmsPage> = {
         id: "faq-main",
         title: "Veelgestelde vragen",
         items: [
-          { question: "Hoe werkt Werkgenoten?", answer: "Plaats een opdracht, ontvang offertes van geverifieerde vakmensen en kies de beste." },
-          { question: "Wat kost het?", answer: "Een opdracht plaatsen is gratis. Vakmensen betalen een abonnement." },
-          { question: "Hoe controleren jullie vakmensen?", answer: "Wij verifiëren KvK, verzekering en reviews." },
+          {
+            question: "Hoe werkt Werkgenoten?",
+            answer:
+              "Plaats een opdracht, ontvang offertes van geverifieerde vakmensen en kies de beste.",
+          },
+          {
+            question: "Wat kost het?",
+            answer: "Een opdracht plaatsen is gratis. Vakmensen betalen een abonnement.",
+          },
+          {
+            question: "Hoe controleren jullie vakmensen?",
+            answer: "Wij verifiëren KvK, verzekering en reviews.",
+          },
         ],
       },
     ],
@@ -72,7 +86,11 @@ const pages: Record<string, CmsPage> = {
     title: "Algemene voorwaarden",
     seo: { title: "Voorwaarden — Werkgenoten" },
     blocks: [
-      { __typename: "RichTextBlock", id: "tos", html: "<h1>Algemene voorwaarden</h1><p>Beheer de inhoud van deze pagina vanuit WordPress.</p>" },
+      {
+        __typename: "RichTextBlock",
+        id: "tos",
+        html: "<h1>Algemene voorwaarden</h1><p>Beheer de inhoud van deze pagina vanuit WordPress.</p>",
+      },
     ],
   },
 };
@@ -89,9 +107,27 @@ const menu: CmsMenu = {
 
 const footer: CmsFooter = {
   columns: [
-    { title: "Platform", links: [{ label: "Opdrachten", href: "/opdrachten" }, { label: "Vakmensen", href: "/vakmensen" }] },
-    { title: "Bedrijf", links: [{ label: "Over ons", href: "/over-ons" }, { label: "Blog", href: "/blog" }] },
-    { title: "Juridisch", links: [{ label: "Voorwaarden", href: "/cms/voorwaarden" }, { label: "Privacy", href: "/cms/privacy" }] },
+    {
+      title: "Platform",
+      links: [
+        { label: "Opdrachten", href: "/opdrachten" },
+        { label: "Vakmensen", href: "/vakmensen" },
+      ],
+    },
+    {
+      title: "Bedrijf",
+      links: [
+        { label: "Over ons", href: "/over-ons" },
+        { label: "Blog", href: "/blog" },
+      ],
+    },
+    {
+      title: "Juridisch",
+      links: [
+        { label: "Voorwaarden", href: "/cms/voorwaarden" },
+        { label: "Privacy", href: "/cms/privacy" },
+      ],
+    },
   ],
   copyright: `© ${new Date().getFullYear()} Werkgenoten`,
 };

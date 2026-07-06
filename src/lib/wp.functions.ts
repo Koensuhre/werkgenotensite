@@ -59,7 +59,11 @@ export const updatePageBlocks = createServerFn({ method: "POST" })
 
 const createInput = z.object({
   title: z.string().min(1).max(200),
-  slug: z.string().min(1).max(200).regex(/^[a-z0-9-]+$/, "Slug mag alleen kleine letters, cijfers en streepjes bevatten"),
+  slug: z
+    .string()
+    .min(1)
+    .max(200)
+    .regex(/^[a-z0-9-]+$/, "Slug mag alleen kleine letters, cijfers en streepjes bevatten"),
 });
 
 export const createPage = createServerFn({ method: "POST" })
@@ -86,6 +90,10 @@ export const wpConfigStatus = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context.supabase, context.userId);
     return {
-      configured: !!(process.env.WP_BASE_URL && process.env.WP_APP_USER && process.env.WP_APP_PASSWORD),
+      configured: !!(
+        process.env.WP_BASE_URL &&
+        process.env.WP_APP_USER &&
+        process.env.WP_APP_PASSWORD
+      ),
     };
   });

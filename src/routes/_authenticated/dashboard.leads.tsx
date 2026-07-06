@@ -11,7 +11,9 @@ function Leads() {
   return (
     <div>
       <h1 className="text-2xl font-semibold">Leads</h1>
-      <p className="text-sm text-muted-foreground">Openstaande opdrachten in jouw vakgebied en regio.</p>
+      <p className="text-sm text-muted-foreground">
+        Openstaande opdrachten in jouw vakgebied en regio.
+      </p>
       <div className="mt-6 space-y-2">
         {isLoading && <div className="text-sm text-muted-foreground">Laden…</div>}
         {!isLoading && jobs.length === 0 && (
@@ -20,11 +22,15 @@ function Leads() {
           </div>
         )}
         {jobs.map((j) => (
-          <div key={j.id} className="bg-card-gradient shadow-card flex items-center justify-between rounded-lg border border-border/60 p-4">
+          <div
+            key={j.id}
+            className="bg-card-gradient shadow-card flex items-center justify-between rounded-lg border border-border/60 p-4"
+          >
             <div>
               <div className="font-medium">{j.title}</div>
               <div className="text-xs text-muted-foreground">
-                {j.category?.name ?? "—"} · {j.city ?? ""} · {formatBudget(j.budget_min, j.budget_max)} · {timeAgo(j.created_at)}
+                {j.category?.name ?? "—"} · {j.city ?? ""} ·{" "}
+                {formatBudget(j.budget_min, j.budget_max)} · {timeAgo(j.created_at)}
               </div>
             </div>
             <Link

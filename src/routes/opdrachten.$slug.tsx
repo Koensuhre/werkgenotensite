@@ -15,7 +15,9 @@ export const Route = createFileRoute("/opdrachten/$slug")({
   notFoundComponent: () => (
     <div className="mx-auto max-w-2xl px-4 py-24 text-center">
       <h1 className="text-2xl font-semibold">Opdracht niet gevonden</h1>
-      <Link to="/opdrachten" className="mt-4 inline-block text-brand hover:underline">← Terug naar opdrachten</Link>
+      <Link to="/opdrachten" className="mt-4 inline-block text-brand hover:underline">
+        ← Terug naar opdrachten
+      </Link>
     </div>
   ),
   component: JobDetail,
@@ -26,41 +28,59 @@ function JobDetail() {
   const { data: job, isLoading } = useJob(slug);
 
   if (isLoading) {
-    return <div className="mx-auto max-w-5xl px-4 py-24 text-center text-sm text-muted-foreground">Laden…</div>;
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-24 text-center text-sm text-muted-foreground">
+        Laden…
+      </div>
+    );
   }
   if (!job) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-24 text-center">
         <h1 className="text-2xl font-semibold">Opdracht niet gevonden</h1>
-        <Link to="/opdrachten" className="mt-4 inline-block text-brand hover:underline">← Terug naar opdrachten</Link>
+        <Link to="/opdrachten" className="mt-4 inline-block text-brand hover:underline">
+          ← Terug naar opdrachten
+        </Link>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-      <Link to="/opdrachten" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/opdrachten"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="h-4 w-4" /> Alle opdrachten
       </Link>
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_320px]">
         <article>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="rounded-md bg-surface-2 px-2 py-0.5">{job.category?.name ?? "—"}</span>
-            <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.city}</span>
-            <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {timeAgo(job.created_at)}</span>
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="h-3 w-3" /> {job.city}
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Clock className="h-3 w-3" /> {timeAgo(job.created_at)}
+            </span>
           </div>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{job.title}</h1>
 
           <div className="bg-card-gradient shadow-card mt-6 rounded-xl border border-border/60 p-6">
             <h2 className="text-sm font-medium">Beschrijving</h2>
-            <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">{job.description}</p>
+            <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+              {job.description}
+            </p>
           </div>
 
           <div className="bg-card-gradient shadow-card mt-4 rounded-xl border border-border/60 p-6">
             <h2 className="text-sm font-medium">Foto's</h2>
             <div className="mt-3 grid grid-cols-3 gap-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="aspect-square rounded-lg border border-dashed border-border bg-surface-2/40" />
+                <div
+                  key={i}
+                  className="aspect-square rounded-lg border border-dashed border-border bg-surface-2/40"
+                />
               ))}
             </div>
           </div>
@@ -71,7 +91,8 @@ function JobDetail() {
               <p className="mt-3 text-sm text-muted-foreground">Nog geen offertes ontvangen.</p>
             ) : (
               <p className="mt-3 text-sm text-muted-foreground">
-                {job.offers} {job.offers === 1 ? "offerte" : "offertes"} — log in als opdrachtgever om ze te zien.
+                {job.offers} {job.offers === 1 ? "offerte" : "offertes"} — log in als opdrachtgever
+                om ze te zien.
               </p>
             )}
           </div>
@@ -83,7 +104,9 @@ function JobDetail() {
               <span>Budget</span>
               <Euro className="h-3.5 w-3.5" />
             </div>
-            <div className="mt-1 text-2xl font-semibold">{formatBudget(job.budget_min, job.budget_max)}</div>
+            <div className="mt-1 text-2xl font-semibold">
+              {formatBudget(job.budget_min, job.budget_max)}
+            </div>
             <button className="mt-5 w-full rounded-lg bg-brand-gradient px-4 py-2.5 text-sm font-medium text-brand-foreground shadow-glow">
               Offerte versturen
             </button>

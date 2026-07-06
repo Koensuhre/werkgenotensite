@@ -21,17 +21,34 @@ function Login() {
         <p className="mt-1 text-sm text-muted-foreground">Log in op je Werkgenoten-account.</p>
         <form className="mt-6 space-y-4">
           <div>
-            <label htmlFor="email" className="mb-1.5 block text-sm font-medium">E-mail</label>
-            <input id="email" type="email" className="w-full rounded-lg border border-border bg-input/40 px-3 py-2 text-sm focus:border-brand focus:outline-none" />
+            <label htmlFor="email" className="mb-1.5 block text-sm font-medium">
+              E-mail
+            </label>
+            <input
+              id="email"
+              type="email"
+              className="w-full rounded-lg border border-border bg-input/40 px-3 py-2 text-sm focus:border-brand focus:outline-none"
+            />
           </div>
           <div>
-            <label htmlFor="pw" className="mb-1.5 block text-sm font-medium">Wachtwoord</label>
-            <input id="pw" type="password" className="w-full rounded-lg border border-border bg-input/40 px-3 py-2 text-sm focus:border-brand focus:outline-none" />
+            <label htmlFor="pw" className="mb-1.5 block text-sm font-medium">
+              Wachtwoord
+            </label>
+            <input
+              id="pw"
+              type="password"
+              className="w-full rounded-lg border border-border bg-input/40 px-3 py-2 text-sm focus:border-brand focus:outline-none"
+            />
           </div>
-          <button className="w-full rounded-lg bg-brand-gradient px-4 py-2.5 text-sm font-medium text-brand-foreground shadow-glow">Inloggen</button>
+          <button className="w-full rounded-lg bg-brand-gradient px-4 py-2.5 text-sm font-medium text-brand-foreground shadow-glow">
+            Inloggen
+          </button>
         </form>
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          Nog geen account? <Link to="/word-professional" className="text-brand hover:underline">Word professional</Link>
+          Nog geen account?{" "}
+          <Link to="/word-professional" className="text-brand hover:underline">
+            Word professional
+          </Link>
         </p>
       </div>
     </div>

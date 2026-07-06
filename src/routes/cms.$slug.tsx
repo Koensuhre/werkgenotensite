@@ -10,9 +10,7 @@ export const Route = createFileRoute("/cms/$slug")({
     return { page };
   },
   head: ({ loaderData: _loaderData, params }) => ({
-    meta: [
-      { title: `${params.slug} — Werkgenoten` },
-    ],
+    meta: [{ title: `${params.slug} — Werkgenoten` }],
   }),
   component: CmsPage,
   errorComponent: ({ error }) => (
@@ -45,7 +43,10 @@ function CmsPage() {
         <h1 className="text-2xl font-semibold">{current.title}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Deze pagina heeft nog geen content. Voeg blokken toe via{" "}
-          <a href={`/admin/paginas/${current.slug}`} className="underline">/admin/paginas</a>.
+          <a href={`/admin/paginas/${current.slug}`} className="underline">
+            /admin/paginas
+          </a>
+          .
         </p>
       </div>
     );

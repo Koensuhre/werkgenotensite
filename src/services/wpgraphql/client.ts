@@ -41,15 +41,33 @@ export const cmsClient: CmsClient = client
         // so the route's errorComponent can show "WP onbereikbaar" instead of
         // a silently empty page. Only a missing page returns null (-> 404).
         const data = await client.request<{
-          page: { slug: string; title: string; content?: string | null; blocksJson?: string | null } | null;
+          page: {
+            slug: string;
+            title: string;
+            content?: string | null;
+            blocksJson?: string | null;
+          } | null;
         }>(
-          /* GraphQL */ `query($slug:ID!){ page(id:$slug, idType:URI){ slug title content blocksJson } }`,
+          /* GraphQL */ `
+            query ($slug: ID!) {
+              page(id: $slug, idType: URI) {
+                slug
+                title
+                content
+                blocksJson
+              }
+            }
+          `,
           { slug },
         );
         if (!data.page) return null;
         let blocks: Block[] = [];
         if (data.page.blocksJson) {
-          try { blocks = JSON.parse(data.page.blocksJson); } catch { blocks = []; }
+          try {
+            blocks = JSON.parse(data.page.blocksJson);
+          } catch {
+            blocks = [];
+          }
         }
         // Fallback: no structured blocks yet (page built with plain
         // Gutenberg/classic editor) — render the rendered HTML content as
@@ -63,11 +81,21 @@ export const cmsClient: CmsClient = client
       async getTheme() {
         try {
           const data = await client.request<{ themeSettings: { tokensJson: string } | null }>(
-            /* GraphQL */ `query{ themeSettings{ tokensJson } }`,
+            /* GraphQL */ `
+              query {
+                themeSettings {
+                  tokensJson
+                }
+              }
+            `,
           );
           const raw = data.themeSettings?.tokensJson;
           if (!raw) return null;
-          try { return JSON.parse(raw) as ThemeTokens; } catch { return null; }
+          try {
+            return JSON.parse(raw) as ThemeTokens;
+          } catch {
+            return null;
+          }
         } catch (err) {
           if (import.meta.env.DEV) console.warn("[cms] getTheme failed", err);
           return null;
@@ -93,19 +121,28 @@ export const cmsClient: CmsClient = client
               }>;
             };
           }>(
-            /* GraphQL */ `query($l:MenuLocationEnum!){
-              menus(where:{location:$l}){
-                nodes{
-                  locations
-                  menuItems(where:{parentId:"0"}){
-                    nodes{
-                      id label uri
-                      childItems{ nodes{ label uri } }
+            /* GraphQL */ `
+              query ($l: MenuLocationEnum!) {
+                menus(where: { location: $l }) {
+                  nodes {
+                    locations
+                    menuItems(where: { parentId: "0" }) {
+                      nodes {
+                        id
+                        label
+                        uri
+                        childItems {
+                          nodes {
+                            label
+                            uri
+                          }
+                        }
+                      }
                     }
                   }
                 }
               }
-            }`,
+            `,
             { l: location.toUpperCase() },
           );
           const node = data.menus?.nodes?.[0];
@@ -123,9 +160,20 @@ export const cmsClient: CmsClient = client
       },
       async getFooter() {
         try {
-          const data = await client.request<{ footer: CmsFooter | null }>(
-            /* GraphQL */ `query{ footer{ columns{title links{label href}} copyright } }`,
-          );
+          const data = await client.request<{ footer: CmsFooter | null }>(/* GraphQL */ `
+            query {
+              footer {
+                columns {
+                  title
+                  links {
+                    label
+                    href
+                  }
+                }
+                copyright
+              }
+            }
+          `);
           return data.footer;
         } catch (err) {
           if (import.meta.env.DEV) console.warn("[cms] getFooter failed", err);
@@ -135,10 +183,28 @@ export const cmsClient: CmsClient = client
       async listPages() {
         try {
           const data = await client.request<{
-            pages: { nodes: Array<{ databaseId: number; slug: string; uri: string; title: string; modified: string }> };
-          }>(
-            /* GraphQL */ `query{ pages(first:100){ nodes{ databaseId slug uri title modified } } }`,
-          );
+            pages: {
+              nodes: Array<{
+                databaseId: number;
+                slug: string;
+                uri: string;
+                title: string;
+                modified: string;
+              }>;
+            };
+          }>(/* GraphQL */ `
+            query {
+              pages(first: 100) {
+                nodes {
+                  databaseId
+                  slug
+                  uri
+                  title
+                  modified
+                }
+              }
+            }
+          `);
           return data.pages.nodes.map((n) => ({
             id: n.databaseId,
             slug: n.slug,

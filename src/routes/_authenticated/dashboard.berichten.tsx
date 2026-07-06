@@ -38,7 +38,10 @@ function Berichten() {
         {messages.map((m) => {
           const incoming = m.recipient_id === user?.id;
           return (
-            <div key={m.id} className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-4">
+            <div
+              key={m.id}
+              className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-4"
+            >
               <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <span>{incoming ? "Ontvangen" : "Verzonden"}</span>
                 <span>{new Date(m.created_at).toLocaleString("nl-NL")}</span>

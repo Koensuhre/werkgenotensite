@@ -1,7 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, Briefcase, Tags, Star, CheckCircle2, ClipboardCheck, UserCheck } from "lucide-react";
+import {
+  Users,
+  Briefcase,
+  Tags,
+  Star,
+  CheckCircle2,
+  ClipboardCheck,
+  UserCheck,
+} from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/_admin/admin/")({
   component: AdminHome,
@@ -11,15 +19,26 @@ function AdminHome() {
   const { data } = useQuery({
     queryKey: ["admin-stats"],
     queryFn: async () => {
-      const [users, jobsOpen, jobsDone, cats, reviews, pendingJobs, pendingPros] = await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact", head: true }),
-        supabase.from("jobs").select("*", { count: "exact", head: true }).eq("status", "open"),
-        supabase.from("jobs").select("*", { count: "exact", head: true }).eq("status", "completed"),
-        supabase.from("categories").select("*", { count: "exact", head: true }),
-        supabase.from("reviews").select("*", { count: "exact", head: true }),
-        supabase.from("jobs").select("*", { count: "exact", head: true }).eq("review_status", "pending_review"),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("primary_type", "professional").eq("review_status", "pending_review"),
-      ]);
+      const [users, jobsOpen, jobsDone, cats, reviews, pendingJobs, pendingPros] =
+        await Promise.all([
+          supabase.from("profiles").select("*", { count: "exact", head: true }),
+          supabase.from("jobs").select("*", { count: "exact", head: true }).eq("status", "open"),
+          supabase
+            .from("jobs")
+            .select("*", { count: "exact", head: true })
+            .eq("status", "completed"),
+          supabase.from("categories").select("*", { count: "exact", head: true }),
+          supabase.from("reviews").select("*", { count: "exact", head: true }),
+          supabase
+            .from("jobs")
+            .select("*", { count: "exact", head: true })
+            .eq("review_status", "pending_review"),
+          supabase
+            .from("profiles")
+            .select("*", { count: "exact", head: true })
+            .eq("primary_type", "professional")
+            .eq("review_status", "pending_review"),
+        ]);
       return {
         users: users.count ?? 0,
         jobsOpen: jobsOpen.count ?? 0,
@@ -33,8 +52,18 @@ function AdminHome() {
   });
 
   const cards = [
-    { label: "Opdrachten in review", value: data?.pendingJobs ?? "—", icon: ClipboardCheck, href: "/admin/review-opdrachten" as const },
-    { label: "Professionals in review", value: data?.pendingPros ?? "—", icon: UserCheck, href: "/admin/review-professionals" as const },
+    {
+      label: "Opdrachten in review",
+      value: data?.pendingJobs ?? "—",
+      icon: ClipboardCheck,
+      href: "/admin/review-opdrachten" as const,
+    },
+    {
+      label: "Professionals in review",
+      value: data?.pendingPros ?? "—",
+      icon: UserCheck,
+      href: "/admin/review-professionals" as const,
+    },
     { label: "Gebruikers", value: data?.users ?? "—", icon: Users },
     { label: "Open opdrachten", value: data?.jobsOpen ?? "—", icon: Briefcase },
     { label: "Afgeronde opdrachten", value: data?.jobsDone ?? "—", icon: CheckCircle2 },
@@ -50,7 +79,10 @@ function AdminHome() {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (
-          <div key={c.label} className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-5">
+          <div
+            key={c.label}
+            className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-5"
+          >
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">{c.label}</span>
               <c.icon className="h-4 w-4 text-muted-foreground" />

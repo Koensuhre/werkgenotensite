@@ -18,7 +18,12 @@ export const Route = createFileRoute("/_authenticated/_admin/admin/thema")({
   component: ThemeAdmin,
 });
 
-type Field = { key: string; label: string; path: (t: ThemeTokens) => string; set: (t: ThemeTokens, v: string) => void };
+type Field = {
+  key: string;
+  label: string;
+  path: (t: ThemeTokens) => string;
+  set: (t: ThemeTokens, v: string) => void;
+};
 
 const colorFields: Field[] = [
   ["background", "Achtergrond"],
@@ -139,7 +144,8 @@ function ThemeAdmin() {
   };
 
   const onClear = async () => {
-    if (!confirm("Overschrijving verwijderen? De site gebruikt dan weer de standaard tokens.")) return;
+    if (!confirm("Overschrijving verwijderen? De site gebruikt dan weer de standaard tokens."))
+      return;
     setSaving(true);
     try {
       await clearThemeOverride();
@@ -168,7 +174,9 @@ function ThemeAdmin() {
       const next = clone(fresh);
       setDraft(next);
       applyTheme(next);
-      toast.success("Baseline opgehaald uit WordPress — controleer en klik Opslaan om live te zetten.");
+      toast.success(
+        "Baseline opgehaald uit WordPress — controleer en klik Opslaan om live te zetten.",
+      );
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Synchroniseren mislukt");
     } finally {
@@ -193,7 +201,8 @@ function ThemeAdmin() {
             className="inline-flex items-center gap-2 rounded-md border border-border bg-secondary px-3 py-2 text-sm disabled:opacity-50"
             title="Haal de huidige themeSettings uit WordPress op als nieuw concept"
           >
-            <DownloadCloud className="h-4 w-4" /> {syncing ? "Synchroniseren…" : "Sync uit WordPress"}
+            <DownloadCloud className="h-4 w-4" />{" "}
+            {syncing ? "Synchroniseren…" : "Sync uit WordPress"}
           </button>
           <button
             onClick={onReset}
@@ -218,7 +227,10 @@ function ThemeAdmin() {
         </div>
       </div>
 
-      <Section title="Kleuren" hint="Waarden in OKLCH of HSL, zoals `oklch(0.72 0.18 155)` of `222 47% 11%`.">
+      <Section
+        title="Kleuren"
+        hint="Waarden in OKLCH of HSL, zoals `oklch(0.72 0.18 155)` of `222 47% 11%`."
+      >
         <div className="grid gap-3 sm:grid-cols-2">
           {colorFields.map((f) => (
             <ColorRow key={f.key} field={f} value={f.path(draft)} onChange={(v) => update(f, v)} />
@@ -245,7 +257,9 @@ function ThemeAdmin() {
       <Section title="Voorbeeld">
         <div className="space-y-4 rounded-xl border border-border bg-card p-6">
           <h2 className="text-2xl font-semibold">Demo titel</h2>
-          <p className="text-muted-foreground">Dit blok gebruikt dezelfde tokens als de rest van de site.</p>
+          <p className="text-muted-foreground">
+            Dit blok gebruikt dezelfde tokens als de rest van de site.
+          </p>
           <div className="flex flex-wrap gap-3">
             <button className="rounded-md bg-brand-gradient px-4 py-2 text-sm font-medium text-brand-foreground shadow-glow">
               Primaire knop
@@ -263,7 +277,15 @@ function ThemeAdmin() {
   );
 }
 
-function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+function Section({
+  title,
+  hint,
+  children,
+}: {
+  title: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="rounded-xl border border-border/60 bg-card-gradient p-5 shadow-card">
       <header className="mb-4">
@@ -275,7 +297,15 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
   );
 }
 
-function TextRow({ field, value, onChange }: { field: Field; value: string; onChange: (v: string) => void }) {
+function TextRow({
+  field,
+  value,
+  onChange,
+}: {
+  field: Field;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <label className="block">
       <span className="mb-1 block text-xs text-muted-foreground">{field.label}</span>
@@ -289,7 +319,15 @@ function TextRow({ field, value, onChange }: { field: Field; value: string; onCh
   );
 }
 
-function ColorRow({ field, value, onChange }: { field: Field; value: string; onChange: (v: string) => void }) {
+function ColorRow({
+  field,
+  value,
+  onChange,
+}: {
+  field: Field;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <label className="block">
       <span className="mb-1 block text-xs text-muted-foreground">{field.label}</span>

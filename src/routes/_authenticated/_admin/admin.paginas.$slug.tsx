@@ -3,15 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import {
-  ArrowLeft,
-  Copy,
-  GripVertical,
-  Plus,
-  Save,
-  Trash2,
-  ExternalLink,
-} from "lucide-react";
+import { ArrowLeft, Copy, GripVertical, Plus, Save, Trash2, ExternalLink } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -36,7 +28,10 @@ export const Route = createFileRoute("/_authenticated/_admin/admin/paginas/$slug
   component: PageEditor,
 });
 
-const WP_BASE = (import.meta.env.VITE_WP_GRAPHQL_URL as string | undefined)?.replace(/\/graphql\/?$/, "");
+const WP_BASE = (import.meta.env.VITE_WP_GRAPHQL_URL as string | undefined)?.replace(
+  /\/graphql\/?$/,
+  "",
+);
 
 type BlockType = Block["__typename"];
 
@@ -62,15 +57,38 @@ function newBlock(type: BlockType): Block {
   const id = newId();
   switch (type) {
     case "HeroBlock":
-      return { __typename: "HeroBlock", id, title: "Nieuwe hero", subtitle: "Subtitel", align: "center", ctas: [] };
+      return {
+        __typename: "HeroBlock",
+        id,
+        title: "Nieuwe hero",
+        subtitle: "Subtitel",
+        align: "center",
+        ctas: [],
+      };
     case "RichTextBlock":
       return { __typename: "RichTextBlock", id, html: "<p>Begin met typen…</p>" };
     case "FeaturesBlock":
-      return { __typename: "FeaturesBlock", id, title: "Features", columns: 3, items: [{ title: "Item", description: "Beschrijving" }] };
+      return {
+        __typename: "FeaturesBlock",
+        id,
+        title: "Features",
+        columns: 3,
+        items: [{ title: "Item", description: "Beschrijving" }],
+      };
     case "CtaBlock":
-      return { __typename: "CtaBlock", id, title: "Klaar om te starten?", ctas: [{ label: "Begin nu", href: "/" }] };
+      return {
+        __typename: "CtaBlock",
+        id,
+        title: "Klaar om te starten?",
+        ctas: [{ label: "Begin nu", href: "/" }],
+      };
     case "FaqBlock":
-      return { __typename: "FaqBlock", id, title: "FAQ", items: [{ question: "Vraag?", answer: "Antwoord." }] };
+      return {
+        __typename: "FaqBlock",
+        id,
+        title: "FAQ",
+        items: [{ question: "Vraag?", answer: "Antwoord." }],
+      };
     case "TestimonialsBlock":
       return { __typename: "TestimonialsBlock", id, items: [{ quote: "Geweldig!", name: "Naam" }] };
     case "StatsBlock":
@@ -80,7 +98,12 @@ function newBlock(type: BlockType): Block {
     case "GalleryBlock":
       return { __typename: "GalleryBlock", id, images: [] };
     case "FormBlock":
-      return { __typename: "FormBlock", id, title: "Contact", fields: [{ name: "email", label: "E-mail", type: "email", required: true }] };
+      return {
+        __typename: "FormBlock",
+        id,
+        title: "Contact",
+        fields: [{ name: "email", label: "E-mail", type: "email", required: true }],
+      };
     case "CustomHtmlBlock":
       return { __typename: "CustomHtmlBlock", id, html: "<div></div>" };
     default:
@@ -106,7 +129,10 @@ function PageEditor() {
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
 
-  const dirty = useMemo(() => JSON.stringify(draft) !== JSON.stringify(page?.blocks ?? []), [draft, page]);
+  const dirty = useMemo(
+    () => JSON.stringify(draft) !== JSON.stringify(page?.blocks ?? []),
+    [draft, page],
+  );
 
   if (isLoading || !draft) {
     return <div className="text-sm text-muted-foreground">Pagina wordt geladen…</div>;
@@ -163,13 +189,21 @@ function PageEditor() {
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <Link to="/admin/paginas" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+          <Link
+            to="/admin/paginas"
+            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+          >
             <ArrowLeft className="h-3.5 w-3.5" /> Terug naar pagina's
           </Link>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight" dangerouslySetInnerHTML={{ __html: page.title }} />
+          <h1
+            className="mt-1 text-2xl font-semibold tracking-tight"
+            dangerouslySetInnerHTML={{ __html: page.title }}
+          />
           <p className="text-xs text-muted-foreground">
             <code>/{slug}</code> · preview op{" "}
-            <Link to="/cms/$slug" params={{ slug }} className="underline">/cms/{slug}</Link>
+            <Link to="/cms/$slug" params={{ slug }} className="underline">
+              /cms/{slug}
+            </Link>
           </p>
         </div>
         <div className="flex gap-2">
@@ -188,7 +222,8 @@ function PageEditor() {
             disabled={saving || !dirty}
             className="inline-flex items-center gap-2 rounded-md bg-brand-gradient px-3 py-2 text-sm font-medium text-brand-foreground disabled:opacity-50"
           >
-            <Save className="h-4 w-4" /> {saving ? "Opslaan…" : dirty ? "Opslaan naar WP" : "Opgeslagen"}
+            <Save className="h-4 w-4" />{" "}
+            {saving ? "Opslaan…" : dirty ? "Opslaan naar WP" : "Opgeslagen"}
           </button>
         </div>
       </div>
@@ -271,8 +306,14 @@ function BlockCard({
   onRemove: () => void;
   onDuplicate: () => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
-  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 };
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: block.id,
+  });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
   return (
     <div ref={setNodeRef} style={style} className="rounded-xl border border-border bg-card">
       <header className="flex items-center justify-between gap-2 border-b border-border/60 px-3 py-2">
@@ -285,13 +326,23 @@ function BlockCard({
           >
             <GripVertical className="h-4 w-4" />
           </button>
-          <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{block.__typename.replace("Block", "")}</span>
+          <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            {block.__typename.replace("Block", "")}
+          </span>
         </div>
         <div className="flex gap-1">
-          <button onClick={onDuplicate} className="rounded p-1.5 text-muted-foreground hover:bg-surface-2" title="Dupliceren">
+          <button
+            onClick={onDuplicate}
+            className="rounded p-1.5 text-muted-foreground hover:bg-surface-2"
+            title="Dupliceren"
+          >
             <Copy className="h-3.5 w-3.5" />
           </button>
-          <button onClick={onRemove} className="rounded p-1.5 text-destructive hover:bg-destructive/10" title="Verwijderen">
+          <button
+            onClick={onRemove}
+            className="rounded p-1.5 text-destructive hover:bg-destructive/10"
+            title="Verwijderen"
+          >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
         </div>
@@ -313,16 +364,45 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 const inputCls = "w-full rounded-md border border-border bg-background px-2.5 py-1.5 text-sm";
 
-function BlockForm({ block, onChange }: { block: Block; onChange: (patch: Partial<Block>) => void }) {
+function BlockForm({
+  block,
+  onChange,
+}: {
+  block: Block;
+  onChange: (patch: Partial<Block>) => void;
+}) {
   switch (block.__typename) {
     case "HeroBlock":
       return (
         <div className="space-y-2">
-          <Field label="Eyebrow"><input className={inputCls} value={block.eyebrow ?? ""} onChange={(e) => onChange({ eyebrow: e.target.value } as any)} /></Field>
-          <Field label="Titel"><input className={inputCls} value={block.title} onChange={(e) => onChange({ title: e.target.value } as any)} /></Field>
-          <Field label="Subtitel"><textarea className={inputCls} rows={2} value={block.subtitle ?? ""} onChange={(e) => onChange({ subtitle: e.target.value } as any)} /></Field>
+          <Field label="Eyebrow">
+            <input
+              className={inputCls}
+              value={block.eyebrow ?? ""}
+              onChange={(e) => onChange({ eyebrow: e.target.value } as any)}
+            />
+          </Field>
+          <Field label="Titel">
+            <input
+              className={inputCls}
+              value={block.title}
+              onChange={(e) => onChange({ title: e.target.value } as any)}
+            />
+          </Field>
+          <Field label="Subtitel">
+            <textarea
+              className={inputCls}
+              rows={2}
+              value={block.subtitle ?? ""}
+              onChange={(e) => onChange({ subtitle: e.target.value } as any)}
+            />
+          </Field>
           <Field label="Uitlijning">
-            <select className={inputCls} value={block.align ?? "center"} onChange={(e) => onChange({ align: e.target.value as "left" | "center" } as any)}>
+            <select
+              className={inputCls}
+              value={block.align ?? "center"}
+              onChange={(e) => onChange({ align: e.target.value as "left" | "center" } as any)}
+            >
               <option value="center">Gecentreerd</option>
               <option value="left">Links</option>
             </select>
@@ -330,29 +410,76 @@ function BlockForm({ block, onChange }: { block: Block; onChange: (patch: Partia
         </div>
       );
     case "RichTextBlock":
-      return <Field label="HTML"><textarea className={`${inputCls} font-mono`} rows={8} value={block.html} onChange={(e) => onChange({ html: e.target.value } as any)} /></Field>;
+      return (
+        <Field label="HTML">
+          <textarea
+            className={`${inputCls} font-mono`}
+            rows={8}
+            value={block.html}
+            onChange={(e) => onChange({ html: e.target.value } as any)}
+          />
+        </Field>
+      );
     case "CustomHtmlBlock":
-      return <Field label="Custom HTML"><textarea className={`${inputCls} font-mono`} rows={8} value={block.html} onChange={(e) => onChange({ html: e.target.value } as any)} /></Field>;
+      return (
+        <Field label="Custom HTML">
+          <textarea
+            className={`${inputCls} font-mono`}
+            rows={8}
+            value={block.html}
+            onChange={(e) => onChange({ html: e.target.value } as any)}
+          />
+        </Field>
+      );
     case "CtaBlock":
       return (
         <div className="space-y-2">
-          <Field label="Titel"><input className={inputCls} value={block.title} onChange={(e) => onChange({ title: e.target.value } as any)} /></Field>
-          <Field label="Subtitel"><input className={inputCls} value={block.subtitle ?? ""} onChange={(e) => onChange({ subtitle: e.target.value } as any)} /></Field>
+          <Field label="Titel">
+            <input
+              className={inputCls}
+              value={block.title}
+              onChange={(e) => onChange({ title: e.target.value } as any)}
+            />
+          </Field>
+          <Field label="Subtitel">
+            <input
+              className={inputCls}
+              value={block.subtitle ?? ""}
+              onChange={(e) => onChange({ subtitle: e.target.value } as any)}
+            />
+          </Field>
           <CtasEditor ctas={block.ctas} onChange={(ctas) => onChange({ ctas } as any)} />
         </div>
       );
     case "FaqBlock":
       return (
         <div className="space-y-2">
-          <Field label="Titel"><input className={inputCls} value={block.title ?? ""} onChange={(e) => onChange({ title: e.target.value } as any)} /></Field>
+          <Field label="Titel">
+            <input
+              className={inputCls}
+              value={block.title ?? ""}
+              onChange={(e) => onChange({ title: e.target.value } as any)}
+            />
+          </Field>
           <ItemListEditor
             items={block.items}
             onChange={(items) => onChange({ items } as any)}
             empty={{ question: "", answer: "" }}
             renderItem={(item, set) => (
               <>
-                <input className={inputCls} placeholder="Vraag" value={item.question} onChange={(e) => set({ ...item, question: e.target.value })} />
-                <textarea className={inputCls} rows={2} placeholder="Antwoord" value={item.answer} onChange={(e) => set({ ...item, answer: e.target.value })} />
+                <input
+                  className={inputCls}
+                  placeholder="Vraag"
+                  value={item.question}
+                  onChange={(e) => set({ ...item, question: e.target.value })}
+                />
+                <textarea
+                  className={inputCls}
+                  rows={2}
+                  placeholder="Antwoord"
+                  value={item.answer}
+                  onChange={(e) => set({ ...item, answer: e.target.value })}
+                />
               </>
             )}
           />
@@ -361,10 +488,22 @@ function BlockForm({ block, onChange }: { block: Block; onChange: (patch: Partia
     case "FeaturesBlock":
       return (
         <div className="space-y-2">
-          <Field label="Titel"><input className={inputCls} value={block.title ?? ""} onChange={(e) => onChange({ title: e.target.value } as any)} /></Field>
+          <Field label="Titel">
+            <input
+              className={inputCls}
+              value={block.title ?? ""}
+              onChange={(e) => onChange({ title: e.target.value } as any)}
+            />
+          </Field>
           <Field label="Kolommen">
-            <select className={inputCls} value={block.columns} onChange={(e) => onChange({ columns: Number(e.target.value) as 2 | 3 | 4 } as any)}>
-              <option value={2}>2</option><option value={3}>3</option><option value={4}>4</option>
+            <select
+              className={inputCls}
+              value={block.columns}
+              onChange={(e) => onChange({ columns: Number(e.target.value) as 2 | 3 | 4 } as any)}
+            >
+              <option value={2}>2</option>
+              <option value={3}>3</option>
+              <option value={4}>4</option>
             </select>
           </Field>
           <ItemListEditor
@@ -373,8 +512,19 @@ function BlockForm({ block, onChange }: { block: Block; onChange: (patch: Partia
             empty={{ title: "", description: "" }}
             renderItem={(item, set) => (
               <>
-                <input className={inputCls} placeholder="Titel" value={item.title} onChange={(e) => set({ ...item, title: e.target.value })} />
-                <textarea className={inputCls} rows={2} placeholder="Beschrijving" value={item.description} onChange={(e) => set({ ...item, description: e.target.value })} />
+                <input
+                  className={inputCls}
+                  placeholder="Titel"
+                  value={item.title}
+                  onChange={(e) => set({ ...item, title: e.target.value })}
+                />
+                <textarea
+                  className={inputCls}
+                  rows={2}
+                  placeholder="Beschrijving"
+                  value={item.description}
+                  onChange={(e) => set({ ...item, description: e.target.value })}
+                />
               </>
             )}
           />
@@ -383,9 +533,27 @@ function BlockForm({ block, onChange }: { block: Block; onChange: (patch: Partia
     case "ImageBlock":
       return (
         <div className="space-y-2">
-          <Field label="Afbeelding URL"><input className={inputCls} value={block.src} onChange={(e) => onChange({ src: e.target.value } as any)} /></Field>
-          <Field label="Alt-tekst"><input className={inputCls} value={block.alt ?? ""} onChange={(e) => onChange({ alt: e.target.value } as any)} /></Field>
-          <Field label="Bijschrift"><input className={inputCls} value={block.caption ?? ""} onChange={(e) => onChange({ caption: e.target.value } as any)} /></Field>
+          <Field label="Afbeelding URL">
+            <input
+              className={inputCls}
+              value={block.src}
+              onChange={(e) => onChange({ src: e.target.value } as any)}
+            />
+          </Field>
+          <Field label="Alt-tekst">
+            <input
+              className={inputCls}
+              value={block.alt ?? ""}
+              onChange={(e) => onChange({ alt: e.target.value } as any)}
+            />
+          </Field>
+          <Field label="Bijschrift">
+            <input
+              className={inputCls}
+              value={block.caption ?? ""}
+              onChange={(e) => onChange({ caption: e.target.value } as any)}
+            />
+          </Field>
         </div>
       );
     case "TestimonialsBlock":
@@ -396,9 +564,25 @@ function BlockForm({ block, onChange }: { block: Block; onChange: (patch: Partia
           empty={{ quote: "", name: "" }}
           renderItem={(item, set) => (
             <>
-              <textarea className={inputCls} rows={2} placeholder="Quote" value={item.quote} onChange={(e) => set({ ...item, quote: e.target.value })} />
-              <input className={inputCls} placeholder="Naam" value={item.name} onChange={(e) => set({ ...item, name: e.target.value })} />
-              <input className={inputCls} placeholder="Rol (optioneel)" value={item.role ?? ""} onChange={(e) => set({ ...item, role: e.target.value })} />
+              <textarea
+                className={inputCls}
+                rows={2}
+                placeholder="Quote"
+                value={item.quote}
+                onChange={(e) => set({ ...item, quote: e.target.value })}
+              />
+              <input
+                className={inputCls}
+                placeholder="Naam"
+                value={item.name}
+                onChange={(e) => set({ ...item, name: e.target.value })}
+              />
+              <input
+                className={inputCls}
+                placeholder="Rol (optioneel)"
+                value={item.role ?? ""}
+                onChange={(e) => set({ ...item, role: e.target.value })}
+              />
             </>
           )}
         />
@@ -411,8 +595,18 @@ function BlockForm({ block, onChange }: { block: Block; onChange: (patch: Partia
           empty={{ value: "", label: "" }}
           renderItem={(item, set) => (
             <div className="grid grid-cols-2 gap-2">
-              <input className={inputCls} placeholder="Waarde" value={item.value} onChange={(e) => set({ ...item, value: e.target.value })} />
-              <input className={inputCls} placeholder="Label" value={item.label} onChange={(e) => set({ ...item, label: e.target.value })} />
+              <input
+                className={inputCls}
+                placeholder="Waarde"
+                value={item.value}
+                onChange={(e) => set({ ...item, value: e.target.value })}
+              />
+              <input
+                className={inputCls}
+                placeholder="Label"
+                value={item.label}
+                onChange={(e) => set({ ...item, label: e.target.value })}
+              />
             </div>
           )}
         />
@@ -425,8 +619,18 @@ function BlockForm({ block, onChange }: { block: Block; onChange: (patch: Partia
           empty={{ src: "", alt: "" }}
           renderItem={(item, set) => (
             <>
-              <input className={inputCls} placeholder="Afbeelding URL" value={item.src} onChange={(e) => set({ ...item, src: e.target.value })} />
-              <input className={inputCls} placeholder="Alt" value={item.alt ?? ""} onChange={(e) => set({ ...item, alt: e.target.value })} />
+              <input
+                className={inputCls}
+                placeholder="Afbeelding URL"
+                value={item.src}
+                onChange={(e) => set({ ...item, src: e.target.value })}
+              />
+              <input
+                className={inputCls}
+                placeholder="Alt"
+                value={item.alt ?? ""}
+                onChange={(e) => set({ ...item, alt: e.target.value })}
+              />
             </>
           )}
         />
@@ -434,17 +638,43 @@ function BlockForm({ block, onChange }: { block: Block; onChange: (patch: Partia
     case "FormBlock":
       return (
         <div className="space-y-2">
-          <Field label="Titel"><input className={inputCls} value={block.title ?? ""} onChange={(e) => onChange({ title: e.target.value } as any)} /></Field>
-          <Field label="Endpoint"><input className={inputCls} value={block.endpoint ?? ""} onChange={(e) => onChange({ endpoint: e.target.value } as any)} /></Field>
+          <Field label="Titel">
+            <input
+              className={inputCls}
+              value={block.title ?? ""}
+              onChange={(e) => onChange({ title: e.target.value } as any)}
+            />
+          </Field>
+          <Field label="Endpoint">
+            <input
+              className={inputCls}
+              value={block.endpoint ?? ""}
+              onChange={(e) => onChange({ endpoint: e.target.value } as any)}
+            />
+          </Field>
           <ItemListEditor
             items={block.fields}
             onChange={(fields) => onChange({ fields } as any)}
             empty={{ name: "veld", label: "Veld", type: "text" as const }}
             renderItem={(item, set) => (
               <div className="grid grid-cols-3 gap-2">
-                <input className={inputCls} placeholder="name" value={item.name} onChange={(e) => set({ ...item, name: e.target.value })} />
-                <input className={inputCls} placeholder="label" value={item.label} onChange={(e) => set({ ...item, label: e.target.value })} />
-                <select className={inputCls} value={item.type} onChange={(e) => set({ ...item, type: e.target.value as any })}>
+                <input
+                  className={inputCls}
+                  placeholder="name"
+                  value={item.name}
+                  onChange={(e) => set({ ...item, name: e.target.value })}
+                />
+                <input
+                  className={inputCls}
+                  placeholder="label"
+                  value={item.label}
+                  onChange={(e) => set({ ...item, label: e.target.value })}
+                />
+                <select
+                  className={inputCls}
+                  value={item.type}
+                  onChange={(e) => set({ ...item, type: e.target.value as any })}
+                >
                   <option value="text">text</option>
                   <option value="email">email</option>
                   <option value="tel">tel</option>
@@ -460,7 +690,13 @@ function BlockForm({ block, onChange }: { block: Block; onChange: (patch: Partia
   }
 }
 
-function CtasEditor({ ctas, onChange }: { ctas?: Array<{ label: string; href: string; variant?: "primary" | "secondary" | "ghost" }>; onChange: (v: any) => void }) {
+function CtasEditor({
+  ctas,
+  onChange,
+}: {
+  ctas?: Array<{ label: string; href: string; variant?: "primary" | "secondary" | "ghost" }>;
+  onChange: (v: any) => void;
+}) {
   const list = ctas ?? [];
   return (
     <ItemListEditor
@@ -469,9 +705,23 @@ function CtasEditor({ ctas, onChange }: { ctas?: Array<{ label: string; href: st
       empty={{ label: "Knop", href: "/" }}
       renderItem={(item, set) => (
         <div className="grid grid-cols-[1fr_1fr_auto] gap-2">
-          <input className={inputCls} placeholder="Label" value={item.label} onChange={(e) => set({ ...item, label: e.target.value })} />
-          <input className={inputCls} placeholder="Href" value={item.href} onChange={(e) => set({ ...item, href: e.target.value })} />
-          <select className={inputCls} value={item.variant ?? "primary"} onChange={(e) => set({ ...item, variant: e.target.value as any })}>
+          <input
+            className={inputCls}
+            placeholder="Label"
+            value={item.label}
+            onChange={(e) => set({ ...item, label: e.target.value })}
+          />
+          <input
+            className={inputCls}
+            placeholder="Href"
+            value={item.href}
+            onChange={(e) => set({ ...item, href: e.target.value })}
+          />
+          <select
+            className={inputCls}
+            value={item.variant ?? "primary"}
+            onChange={(e) => set({ ...item, variant: e.target.value as any })}
+          >
             <option value="primary">primair</option>
             <option value="secondary">secundair</option>
             <option value="ghost">ghost</option>

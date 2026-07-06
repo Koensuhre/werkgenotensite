@@ -65,12 +65,20 @@ function AdminJobs() {
           </thead>
           <tbody>
             {isLoading && (
-              <tr><td colSpan={4} className="px-4 py-6 text-muted-foreground">Laden…</td></tr>
+              <tr>
+                <td colSpan={4} className="px-4 py-6 text-muted-foreground">
+                  Laden…
+                </td>
+              </tr>
             )}
             {jobs.map((j) => (
               <tr key={j.id} className="border-t border-border/60">
                 <td className="px-4 py-3">
-                  <Link to="/opdrachten/$slug" params={{ slug: j.slug }} className="hover:underline">
+                  <Link
+                    to="/opdrachten/$slug"
+                    params={{ slug: j.slug }}
+                    className="hover:underline"
+                  >
                     {j.title}
                   </Link>
                 </td>
@@ -78,17 +86,23 @@ function AdminJobs() {
                 <td className="px-4 py-3">
                   <select
                     value={j.status}
-                    onChange={(e) => setStatus.mutate({ id: j.id, status: e.target.value as JobStatus })}
+                    onChange={(e) =>
+                      setStatus.mutate({ id: j.id, status: e.target.value as JobStatus })
+                    }
                     className="rounded-md border border-border bg-background px-2 py-1 text-xs"
                   >
                     {STATUSES.map((s) => (
-                      <option key={s} value={s}>{s}</option>
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
                     ))}
                   </select>
                 </td>
                 <td className="px-4 py-3 text-right">
                   <button
-                    onClick={() => { if (confirm("Verwijderen?")) remove.mutate(j.id); }}
+                    onClick={() => {
+                      if (confirm("Verwijderen?")) remove.mutate(j.id);
+                    }}
                     className="text-xs text-destructive hover:underline"
                   >
                     Verwijderen

@@ -9,7 +9,12 @@ export const Route = createFileRoute("/_authenticated/_admin/admin/categorieen")
 });
 
 function slugify(s: string) {
-  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 function AdminCategories() {
@@ -29,11 +34,14 @@ function AdminCategories() {
   const create = useMutation({
     mutationFn: async () => {
       const slug = slugify(name);
-      const { error } = await supabase.from("categories").insert({ name, slug, description: description || null });
+      const { error } = await supabase
+        .from("categories")
+        .insert({ name, slug, description: description || null });
       if (error) throw error;
     },
     onSuccess: () => {
-      setName(""); setDescription("");
+      setName("");
+      setDescription("");
       qc.invalidateQueries({ queryKey: ["admin-categories"] });
       toast.success("Categorie toegevoegd");
     },
@@ -57,20 +65,26 @@ function AdminCategories() {
       <h1 className="text-2xl font-semibold tracking-tight">Categorieën</h1>
 
       <form
-        onSubmit={(e) => { e.preventDefault(); if (name.trim()) create.mutate(); }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (name.trim()) create.mutate();
+        }}
         className="flex flex-wrap items-end gap-2 rounded-xl border border-border/60 bg-card p-4"
       >
         <div className="min-w-[200px] flex-1">
           <label className="mb-1 block text-xs text-muted-foreground">Naam</label>
           <input
-            value={name} onChange={(e) => setName(e.target.value)} required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
             className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
           />
         </div>
         <div className="min-w-[200px] flex-1">
           <label className="mb-1 block text-xs text-muted-foreground">Omschrijving</label>
           <input
-            value={description} onChange={(e) => setDescription(e.target.value)}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
           />
         </div>
@@ -97,7 +111,9 @@ function AdminCategories() {
                 <td className="px-4 py-3 text-muted-foreground">{c.description ?? "—"}</td>
                 <td className="px-4 py-3 text-right">
                   <button
-                    onClick={() => { if (confirm("Verwijderen?")) remove.mutate(c.id); }}
+                    onClick={() => {
+                      if (confirm("Verwijderen?")) remove.mutate(c.id);
+                    }}
                     className="text-xs text-destructive hover:underline"
                   >
                     Verwijderen

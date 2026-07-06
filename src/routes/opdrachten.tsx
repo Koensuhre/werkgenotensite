@@ -7,7 +7,10 @@ export const Route = createFileRoute("/opdrachten")({
   head: () => ({
     meta: [
       { title: "Opdrachten — Werkgenoten" },
-      { name: "description", content: "Bekijk actuele klussen in heel Nederland en stuur jouw offerte." },
+      {
+        name: "description",
+        content: "Bekijk actuele klussen in heel Nederland en stuur jouw offerte.",
+      },
       { property: "og:title", content: "Opdrachten — Werkgenoten" },
       { property: "og:description", content: "Bekijk actuele klussen en stuur een offerte." },
       { property: "og:url", content: "/opdrachten" },
@@ -31,7 +34,7 @@ export function JobsList() {
       (j) =>
         j.title.toLowerCase().includes(s) ||
         j.description.toLowerCase().includes(s) ||
-        (j.city ?? "").toLowerCase().includes(s)
+        (j.city ?? "").toLowerCase().includes(s),
     );
   }, [allJobs, search]);
 
@@ -64,15 +67,29 @@ export function JobsList() {
               className="w-full rounded-md border border-border bg-input/40 px-2 py-1.5 text-sm"
             >
               <option value="">Heel Nederland</option>
-              {["Amsterdam", "Rotterdam", "Den Haag", "Utrecht", "Eindhoven", "Groningen"].map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
+              {["Amsterdam", "Rotterdam", "Den Haag", "Utrecht", "Eindhoven", "Groningen"].map(
+                (c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ),
+              )}
             </select>
           </div>
-          <FilterGroup icon={<Euro className="h-4 w-4" />} label="Budget" options={["< €500", "€500 – €1.500", "€1.500 – €5.000", "> €5.000"]} />
-          <FilterGroup icon={<Calendar className="h-4 w-4" />} label="Geplaatst" options={["Vandaag", "Deze week", "Deze maand"]} />
+          <FilterGroup
+            icon={<Euro className="h-4 w-4" />}
+            label="Budget"
+            options={["< €500", "€500 – €1.500", "€1.500 – €5.000", "> €5.000"]}
+          />
+          <FilterGroup
+            icon={<Calendar className="h-4 w-4" />}
+            label="Geplaatst"
+            options={["Vandaag", "Deze week", "Deze maand"]}
+          />
           <div>
-            <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">Categorie</div>
+            <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Categorie
+            </div>
             <div className="flex flex-wrap gap-1.5">
               <button
                 onClick={() => setCategorySlug(undefined)}
@@ -109,16 +126,26 @@ export function JobsList() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span className="rounded-md bg-surface-2 px-2 py-0.5">{j.category?.name ?? "—"}</span>
+                    <span className="rounded-md bg-surface-2 px-2 py-0.5">
+                      {j.category?.name ?? "—"}
+                    </span>
                     <span>· {j.city}</span>
                     <span>· {timeAgo(j.created_at)}</span>
-                    {j.urgent && <span className="inline-flex items-center gap-1 text-brand"><Zap className="h-3 w-3" /> Spoed</span>}
+                    {j.urgent && (
+                      <span className="inline-flex items-center gap-1 text-brand">
+                        <Zap className="h-3 w-3" /> Spoed
+                      </span>
+                    )}
                   </div>
                   <h3 className="mt-2 text-lg font-semibold leading-snug">{j.title}</h3>
-                  <p className="mt-2 line-clamp-2 max-w-2xl text-sm text-muted-foreground">{j.description}</p>
+                  <p className="mt-2 line-clamp-2 max-w-2xl text-sm text-muted-foreground">
+                    {j.description}
+                  </p>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-semibold">{formatBudget(j.budget_min, j.budget_max)}</div>
+                  <div className="text-sm font-semibold">
+                    {formatBudget(j.budget_min, j.budget_max)}
+                  </div>
                   <div className="mt-1 text-xs text-muted-foreground">{j.offers} offertes</div>
                 </div>
               </div>
@@ -129,7 +156,9 @@ export function JobsList() {
                   </div>
                   <span>{j.client?.display_name ?? "Opdrachtgever"}</span>
                 </div>
-                <span className="text-brand opacity-0 transition-opacity group-hover:opacity-100">Bekijk →</span>
+                <span className="text-brand opacity-0 transition-opacity group-hover:opacity-100">
+                  Bekijk →
+                </span>
               </div>
             </Link>
           ))}
@@ -139,7 +168,15 @@ export function JobsList() {
   );
 }
 
-function FilterGroup({ icon, label, options }: { icon: React.ReactNode; label: string; options: string[] }) {
+function FilterGroup({
+  icon,
+  label,
+  options,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  options: string[];
+}) {
   return (
     <div>
       <div className="mb-2 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -148,7 +185,10 @@ function FilterGroup({ icon, label, options }: { icon: React.ReactNode; label: s
       <div className="space-y-1.5">
         {options.map((o) => (
           <label key={o} className="flex items-center gap-2 text-sm">
-            <input type="checkbox" className="h-3.5 w-3.5 rounded border-border bg-input accent-brand" />
+            <input
+              type="checkbox"
+              className="h-3.5 w-3.5 rounded border-border bg-input accent-brand"
+            />
             {o}
           </label>
         ))}

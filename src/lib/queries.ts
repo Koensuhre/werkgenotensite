@@ -48,7 +48,7 @@ async function fetchJobs(filter?: { categorySlug?: string; city?: string }) {
   let q = supabase
     .from("jobs")
     .select(
-      "id, slug, title, description, city, budget_min, budget_max, urgent, status, created_at, client_id, category:categories(name, slug)"
+      "id, slug, title, description, city, budget_min, budget_max, urgent, status, created_at, client_id, category:categories(name, slug)",
     )
     .eq("status", "open")
     .order("created_at", { ascending: false });
@@ -98,7 +98,7 @@ export function useJob(slug: string) {
       const { data, error } = await supabase
         .from("jobs")
         .select(
-          "id, slug, title, description, city, budget_min, budget_max, urgent, status, created_at, client_id, category:categories(name, slug)"
+          "id, slug, title, description, city, budget_min, budget_max, urgent, status, created_at, client_id, category:categories(name, slug)",
         )
         .eq("slug", slug)
         .maybeSingle();
@@ -110,10 +110,7 @@ export function useJob(slug: string) {
           .select("display_name, city, rating_avg, review_count")
           .eq("id", data.client_id)
           .maybeSingle(),
-        supabase
-          .from("quotes")
-          .select("*", { count: "exact", head: true })
-          .eq("job_id", data.id),
+        supabase.from("quotes").select("*", { count: "exact", head: true }).eq("job_id", data.id),
       ]);
       return { ...data, client, offers: count ?? 0 };
     },
@@ -143,7 +140,7 @@ export function usePros(filter?: { categorySlug?: string; city?: string; search?
       let q = supabase
         .from("profiles")
         .select(
-          "id, slug, display_name, company, city, bio, response_time, years_experience, verified, rating_avg, review_count, category:categories(name, slug)"
+          "id, slug, display_name, company, city, bio, response_time, years_experience, verified, rating_avg, review_count, category:categories(name, slug)",
         )
         .eq("primary_type", "professional")
         .not("slug", "is", null)
@@ -176,7 +173,7 @@ export function usePro(slug: string) {
       const { data, error } = await supabase
         .from("profiles")
         .select(
-          "id, slug, display_name, company, city, bio, response_time, years_experience, verified, rating_avg, review_count, category:categories(name, slug)"
+          "id, slug, display_name, company, city, bio, response_time, years_experience, verified, rating_avg, review_count, category:categories(name, slug)",
         )
         .eq("slug", slug)
         .maybeSingle();
@@ -200,7 +197,8 @@ export function initialsOf(name: string | null | undefined) {
 
 export function formatBudget(min: number | null, max: number | null) {
   if (min == null && max == null) return "Op aanvraag";
-  if (min != null && max != null) return `€${min.toLocaleString("nl-NL")} – €${max.toLocaleString("nl-NL")}`;
+  if (min != null && max != null)
+    return `€${min.toLocaleString("nl-NL")} – €${max.toLocaleString("nl-NL")}`;
   if (min != null) return `vanaf €${min.toLocaleString("nl-NL")}`;
   return `tot €${(max ?? 0).toLocaleString("nl-NL")}`;
 }

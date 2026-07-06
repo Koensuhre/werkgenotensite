@@ -19,10 +19,21 @@ function DashboardHome() {
     enabled: !!user,
     queryFn: async () => {
       const [openJobs, allJobs, quotes, unreadMsgs] = await Promise.all([
-        supabase.from("jobs").select("*", { count: "exact", head: true }).eq("client_id", user!.id).eq("status", "open"),
+        supabase
+          .from("jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("client_id", user!.id)
+          .eq("status", "open"),
         supabase.from("jobs").select("*", { count: "exact", head: true }).eq("client_id", user!.id),
-        supabase.from("quotes").select("id, job_id, jobs!inner(client_id)").eq("jobs.client_id", user!.id),
-        supabase.from("messages").select("*", { count: "exact", head: true }).eq("recipient_id", user!.id).is("read_at", null),
+        supabase
+          .from("quotes")
+          .select("id, job_id, jobs!inner(client_id)")
+          .eq("jobs.client_id", user!.id),
+        supabase
+          .from("messages")
+          .select("*", { count: "exact", head: true })
+          .eq("recipient_id", user!.id)
+          .is("read_at", null),
       ]);
       return {
         openJobs: openJobs.count ?? 0,
@@ -49,10 +60,20 @@ function DashboardHome() {
   });
 
   const kpis = [
-    { label: "Actieve opdrachten", value: stats?.openJobs ?? 0, icon: Briefcase, trend: `${stats?.allJobs ?? 0} totaal` },
+    {
+      label: "Actieve opdrachten",
+      value: stats?.openJobs ?? 0,
+      icon: Briefcase,
+      trend: `${stats?.allJobs ?? 0} totaal`,
+    },
     { label: "Ontvangen offertes", value: stats?.quotes ?? 0, icon: TrendingUp, trend: "" },
     { label: "Ongelezen berichten", value: stats?.unreadMsgs ?? 0, icon: MessageCircle, trend: "" },
-    { label: "Gemiddelde score", value: profile?.rating_avg ?? "—", icon: Star, trend: `${profile?.review_count ?? 0} reviews` },
+    {
+      label: "Gemiddelde score",
+      value: profile?.rating_avg ?? "—",
+      icon: Star,
+      trend: `${profile?.review_count ?? 0} reviews`,
+    },
   ];
 
   const greeting = profile?.display_name ? `Hoi, ${profile.display_name.split(" ")[0]}` : "Welkom";
@@ -65,7 +86,10 @@ function DashboardHome() {
       </header>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {kpis.map((k) => (
-          <div key={k.label} className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-4">
+          <div
+            key={k.label}
+            className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-4"
+          >
             <div className="flex items-center justify-between">
               <div className="text-xs text-muted-foreground">{k.label}</div>
               <k.icon className="h-4 w-4 text-brand" />
@@ -81,7 +105,9 @@ function DashboardHome() {
         {recentJobs.length === 0 ? (
           <p className="mt-4 text-sm text-muted-foreground">
             Je hebt nog geen opdrachten geplaatst.{" "}
-            <Link to="/plaats-opdracht" className="text-brand hover:underline">Plaats er nu een →</Link>
+            <Link to="/plaats-opdracht" className="text-brand hover:underline">
+              Plaats er nu een →
+            </Link>
           </p>
         ) : (
           <div className="mt-4 space-y-2">
@@ -98,7 +124,9 @@ function DashboardHome() {
                     {j.category?.name ?? "—"} · {j.city ?? ""} · {j.status}
                   </div>
                 </div>
-                <div className="text-sm font-semibold">{formatBudget(j.budget_min, j.budget_max)}</div>
+                <div className="text-sm font-semibold">
+                  {formatBudget(j.budget_min, j.budget_max)}
+                </div>
               </Link>
             ))}
           </div>

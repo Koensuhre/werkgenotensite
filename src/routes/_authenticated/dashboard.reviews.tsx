@@ -27,7 +27,9 @@ function Reviews() {
   return (
     <div>
       <h1 className="text-2xl font-semibold">Reviews</h1>
-      <p className="text-sm text-muted-foreground">Beoordelingen die klanten over jou achterlieten.</p>
+      <p className="text-sm text-muted-foreground">
+        Beoordelingen die klanten over jou achterlieten.
+      </p>
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         {isLoading && <div className="text-sm text-muted-foreground">Laden…</div>}
         {!isLoading && reviews.length === 0 && (
@@ -36,9 +38,14 @@ function Reviews() {
           </div>
         )}
         {reviews.map((r) => (
-          <div key={r.id} className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-5">
+          <div
+            key={r.id}
+            className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-5"
+          >
             <div className="flex items-center justify-between">
-              <div className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("nl-NL")}</div>
+              <div className="text-xs text-muted-foreground">
+                {new Date(r.created_at).toLocaleDateString("nl-NL")}
+              </div>
               <div className="flex gap-0.5">
                 {Array.from({ length: r.rating }).map((_, i) => (
                   <Star key={i} className="h-3.5 w-3.5 fill-brand text-brand" />
