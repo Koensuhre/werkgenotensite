@@ -43,7 +43,9 @@ function Abonnement() {
       <h1 className="text-2xl font-semibold">Abonnement</h1>
       <p className="text-sm text-muted-foreground">
         Je huidige plan:{" "}
-        <span className="text-brand">{currentPlan?.name ?? (active ? "Actief" : "Geen actief abonnement")}</span>
+        <span className="text-brand">
+          {currentPlan?.name ?? (active ? "Actief" : "Geen actief abonnement")}
+        </span>
         {sub?.cancel_at_period_end && sub.current_period_end && (
           <span className="ml-2 text-amber-500">
             (loopt af op {new Date(sub.current_period_end).toLocaleDateString("nl-NL")})

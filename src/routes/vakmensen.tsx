@@ -7,7 +7,11 @@ export const Route = createFileRoute("/vakmensen")({
   head: () => ({
     meta: [
       { title: "Vakmensen — Werkgenoten" },
-      { name: "description", content: "Vind gecontroleerde vakmensen in jouw regio. Vergelijk reviews, ervaring en reactietijd." },
+      {
+        name: "description",
+        content:
+          "Vind gecontroleerde vakmensen in jouw regio. Vergelijk reviews, ervaring en reactietijd.",
+      },
       { property: "og:title", content: "Vakmensen — Werkgenoten" },
       { property: "og:description", content: "Gecontroleerde vakmensen in heel Nederland." },
       { property: "og:url", content: "/vakmensen" },
@@ -49,7 +53,9 @@ export function ProsList() {
         >
           <option value="">Alle categorieën</option>
           {categories.map((c) => (
-            <option key={c.slug} value={c.slug}>{c.name}</option>
+            <option key={c.slug} value={c.slug}>
+              {c.name}
+            </option>
           ))}
         </select>
         <select
@@ -59,7 +65,9 @@ export function ProsList() {
         >
           <option value="">Heel Nederland</option>
           {["Amsterdam", "Rotterdam", "Utrecht", "Den Haag", "Eindhoven", "Groningen"].map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c} value={c}>
+              {c}
+            </option>
           ))}
         </select>
       </div>

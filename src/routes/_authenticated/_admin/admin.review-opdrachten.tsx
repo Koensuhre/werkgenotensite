@@ -22,7 +22,9 @@ function ReviewJobs() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("jobs")
-        .select("id, slug, title, description, city, budget_min, budget_max, created_at, client_id, category:categories(name)")
+        .select(
+          "id, slug, title, description, city, budget_min, budget_max, created_at, client_id, category:categories(name)",
+        )
         .eq("review_status", "pending_review")
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -42,7 +44,8 @@ function ReviewJobs() {
   });
 
   const reject = useMutation({
-    mutationFn: ({ id, reason }: { id: string; reason: string }) => rejectFn({ data: { id, reason } }),
+    mutationFn: ({ id, reason }: { id: string; reason: string }) =>
+      rejectFn({ data: { id, reason } }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-pending-jobs"] });
       qc.invalidateQueries({ queryKey: ["admin-stats"] });
@@ -52,7 +55,10 @@ function ReviewJobs() {
   });
 
   const [contactFor, setContactFor] = useState<string | null>(null);
-  const [contactData, setContactData] = useState<{ email: string | null; phone: string | null } | null>(null);
+  const [contactData, setContactData] = useState<{
+    email: string | null;
+    phone: string | null;
+  } | null>(null);
 
   async function showContact(clientId: string) {
     setContactFor(clientId);
@@ -70,7 +76,9 @@ function ReviewJobs() {
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Te reviewen opdrachten</h1>
-        <p className="text-sm text-muted-foreground">Nieuwe opdrachten wachten op goedkeuring voor ze publiek zichtbaar worden.</p>
+        <p className="text-sm text-muted-foreground">
+          Nieuwe opdrachten wachten op goedkeuring voor ze publiek zichtbaar worden.
+        </p>
       </div>
 
       {isLoading && <div className="text-sm text-muted-foreground">Laden…</div>}
@@ -82,18 +90,27 @@ function ReviewJobs() {
 
       <div className="space-y-3">
         {jobs.map((j) => (
-          <div key={j.id} className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-5">
+          <div
+            key={j.id}
+            className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-5"
+          >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                  <span className="rounded-md bg-surface-2 px-2 py-0.5">{j.category?.name ?? "—"}</span>
+                  <span className="rounded-md bg-surface-2 px-2 py-0.5">
+                    {j.category?.name ?? "—"}
+                  </span>
                   <span>· {j.city ?? "—"}</span>
                   <span>· {timeAgo(j.created_at)}</span>
-                  <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-amber-500">In review</span>
+                  <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-amber-500">
+                    In review
+                  </span>
                 </div>
                 <h3 className="mt-2 text-lg font-semibold">{j.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground line-clamp-3">{j.description}</p>
-                <div className="mt-2 text-xs text-muted-foreground">Budget: {formatBudget(j.budget_min, j.budget_max)}</div>
+                <div className="mt-2 text-xs text-muted-foreground">
+                  Budget: {formatBudget(j.budget_min, j.budget_max)}
+                </div>
               </div>
               <div className="flex flex-col gap-2">
                 <button
@@ -129,13 +146,26 @@ function ReviewJobs() {
                     <div>
                       E-mail:{" "}
                       {contactData.email ? (
-                        <a className="text-brand hover:underline" href={`mailto:${contactData.email}?subject=Je opdracht op Werkgenoten: ${encodeURIComponent(j.title)}`}>
+                        <a
+                          className="text-brand hover:underline"
+                          href={`mailto:${contactData.email}?subject=Je opdracht op Werkgenoten: ${encodeURIComponent(j.title)}`}
+                        >
                           {contactData.email}
                         </a>
-                      ) : "—"}
+                      ) : (
+                        "—"
+                      )}
                     </div>
                     <div>Telefoon: {contactData.phone ?? "—"}</div>
-                    <button onClick={() => { setContactFor(null); setContactData(null); }} className="mt-2 text-xs text-muted-foreground hover:underline">Sluiten</button>
+                    <button
+                      onClick={() => {
+                        setContactFor(null);
+                        setContactData(null);
+                      }}
+                      className="mt-2 text-xs text-muted-foreground hover:underline"
+                    >
+                      Sluiten
+                    </button>
                   </div>
                 )}
               </div>

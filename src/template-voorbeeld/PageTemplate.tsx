@@ -19,15 +19,7 @@
  */
 
 import { Link } from "@tanstack/react-router";
-import {
-  ArrowRight,
-  CheckCircle2,
-  Sparkles,
-  Shield,
-  Clock,
-  Star,
-  Zap,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, Sparkles, Shield, Clock, Star, Zap } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*  HOOFDCOMPONENT                                                            */
@@ -73,8 +65,8 @@ function Hero() {
             Voorbeeld-heading voor je nieuwe pagina
           </h1>
           <p className="animate-fade-up mx-auto mt-6 max-w-2xl text-balance text-lg text-muted-foreground">
-            Korte, wervende ondertitel die uitlegt wat de pagina doet en waarom
-            de bezoeker verder moet lezen.
+            Korte, wervende ondertitel die uitlegt wat de pagina doet en waarom de bezoeker verder
+            moet lezen.
           </p>
           <div className="animate-fade-up mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             {/* Primaire CTA — gebruik altijd bg-brand-gradient */}
@@ -259,9 +251,7 @@ function Categories() {
           >
             <div className="text-3xl">{c.icon}</div>
             <div className="mt-3 font-medium">{c.name}</div>
-            <div className="mt-1 text-xs text-muted-foreground line-clamp-1">
-              {c.description}
-            </div>
+            <div className="mt-1 text-xs text-muted-foreground line-clamp-1">{c.description}</div>
             <ArrowRight className="absolute right-4 top-4 h-4 w-4 text-muted-foreground opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-0.5" />
           </Link>
         ))}
@@ -277,9 +267,36 @@ function Categories() {
 
 function FeaturedJobs() {
   const jobs = [
-    { id: "1", title: "Voorbeeld item 1", category: "Categorie", city: "Amsterdam", time: "2 uur geleden", budget: "€500 – €800", urgent: true, description: "Beschrijving van het item." },
-    { id: "2", title: "Voorbeeld item 2", category: "Categorie", city: "Utrecht",   time: "5 uur geleden", budget: "€200 – €400", urgent: false, description: "Beschrijving van het item." },
-    { id: "3", title: "Voorbeeld item 3", category: "Categorie", city: "Rotterdam", time: "1 dag geleden", budget: "€900 – €1200", urgent: false, description: "Beschrijving van het item." },
+    {
+      id: "1",
+      title: "Voorbeeld item 1",
+      category: "Categorie",
+      city: "Amsterdam",
+      time: "2 uur geleden",
+      budget: "€500 – €800",
+      urgent: true,
+      description: "Beschrijving van het item.",
+    },
+    {
+      id: "2",
+      title: "Voorbeeld item 2",
+      category: "Categorie",
+      city: "Utrecht",
+      time: "5 uur geleden",
+      budget: "€200 – €400",
+      urgent: false,
+      description: "Beschrijving van het item.",
+    },
+    {
+      id: "3",
+      title: "Voorbeeld item 3",
+      category: "Categorie",
+      city: "Rotterdam",
+      time: "1 dag geleden",
+      budget: "€900 – €1200",
+      urgent: false,
+      description: "Beschrijving van het item.",
+    },
   ];
   return (
     <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
@@ -288,7 +305,9 @@ function FeaturedJobs() {
           <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Uitgelichte items</h2>
           <p className="mt-2 text-muted-foreground">Optionele ondertitel.</p>
         </div>
-        <Link to="/" className="text-sm text-brand hover:underline">Bekijk alles →</Link>
+        <Link to="/" className="text-sm text-brand hover:underline">
+          Bekijk alles →
+        </Link>
       </div>
       <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {jobs.map((j) => (
@@ -307,7 +326,9 @@ function FeaturedJobs() {
             <h3 className="mt-3 font-semibold leading-snug">{j.title}</h3>
             <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{j.description}</p>
             <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-              <span>{j.city} · {j.time}</span>
+              <span>
+                {j.city} · {j.time}
+              </span>
               <span className="font-medium text-foreground">{j.budget}</span>
             </div>
           </div>
@@ -324,9 +345,9 @@ function FeaturedJobs() {
 function Stats() {
   const stats = [
     { value: "10.000", suffix: "+", label: "Tevreden klanten" },
-    { value: "96",     suffix: "%",  label: "Positieve reviews" },
-    { value: "24",     suffix: "u",  label: "Gemiddelde reactietijd" },
-    { value: "500",    suffix: "+",  label: "Professionals" },
+    { value: "96", suffix: "%", label: "Positieve reviews" },
+    { value: "24", suffix: "u", label: "Gemiddelde reactietijd" },
+    { value: "500", suffix: "+", label: "Professionals" },
   ];
   return (
     <section className="border-y border-border/60 bg-surface/30 py-20">
@@ -353,10 +374,30 @@ function Stats() {
 
 function Testimonials() {
   const testimonials = [
-    { name: "Jan de Vries",    role: "Opdrachtgever", rating: 5, quote: "Uitstekende ervaring, snelle service." },
-    { name: "Maria Jansen",    role: "Professional",  rating: 5, quote: "Ik vind hier iedere week nieuwe klussen." },
-    { name: "Peter Bakker",    role: "Opdrachtgever", rating: 4, quote: "Duidelijk platform, prettig in gebruik." },
-    { name: "Lisa van den Berg", role: "Professional", rating: 5, quote: "Top offertesysteem, erg overzichtelijk." },
+    {
+      name: "Jan de Vries",
+      role: "Opdrachtgever",
+      rating: 5,
+      quote: "Uitstekende ervaring, snelle service.",
+    },
+    {
+      name: "Maria Jansen",
+      role: "Professional",
+      rating: 5,
+      quote: "Ik vind hier iedere week nieuwe klussen.",
+    },
+    {
+      name: "Peter Bakker",
+      role: "Opdrachtgever",
+      rating: 4,
+      quote: "Duidelijk platform, prettig in gebruik.",
+    },
+    {
+      name: "Lisa van den Berg",
+      role: "Professional",
+      rating: 5,
+      quote: "Top offertesysteem, erg overzichtelijk.",
+    },
   ];
   return (
     <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
@@ -393,9 +434,30 @@ function Testimonials() {
 
 function Pricing() {
   const plans = [
-    { name: "Starter",      price: 0,  tagline: "Voor kleine projecten.", highlight: false, cta: "Kies Starter", features: ["Feature 1", "Feature 2", "Feature 3"] },
-    { name: "Professional", price: 29, tagline: "Voor actieve gebruikers.", highlight: true,  cta: "Kies Professional", features: ["Alles uit Starter", "Feature 4", "Feature 5", "Feature 6"] },
-    { name: "Business",     price: 79, tagline: "Voor teams.",              highlight: false, cta: "Kies Business", features: ["Alles uit Professional", "Feature 7", "Feature 8"] },
+    {
+      name: "Starter",
+      price: 0,
+      tagline: "Voor kleine projecten.",
+      highlight: false,
+      cta: "Kies Starter",
+      features: ["Feature 1", "Feature 2", "Feature 3"],
+    },
+    {
+      name: "Professional",
+      price: 29,
+      tagline: "Voor actieve gebruikers.",
+      highlight: true,
+      cta: "Kies Professional",
+      features: ["Alles uit Starter", "Feature 4", "Feature 5", "Feature 6"],
+    },
+    {
+      name: "Business",
+      price: 79,
+      tagline: "Voor teams.",
+      highlight: false,
+      cta: "Kies Business",
+      features: ["Alles uit Professional", "Feature 7", "Feature 8"],
+    },
   ];
   return (
     <section id="pricing" className="mx-auto max-w-7xl px-4 py-24 sm:px-6">

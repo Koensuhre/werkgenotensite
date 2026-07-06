@@ -40,17 +40,19 @@ async function resolveOrCreateCustomer(
 }
 
 export const createCheckoutSession = createServerFn({ method: "POST" })
-  .inputValidator((data: {
-    priceId: string;
-    quantity?: number;
-    customerEmail?: string;
-    userId?: string;
-    returnUrl: string;
-    environment: StripeEnv;
-  }) => {
-    if (!/^[a-zA-Z0-9_-]+$/.test(data.priceId)) throw new Error("Invalid priceId");
-    return data;
-  })
+  .inputValidator(
+    (data: {
+      priceId: string;
+      quantity?: number;
+      customerEmail?: string;
+      userId?: string;
+      returnUrl: string;
+      environment: StripeEnv;
+    }) => {
+      if (!/^[a-zA-Z0-9_-]+$/.test(data.priceId)) throw new Error("Invalid priceId");
+      return data;
+    },
+  )
   .handler(async ({ data }): Promise<CheckoutSessionResult> => {
     try {
       const stripe = createStripeClient(data.environment);
@@ -60,18 +62,18 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
       const stripePrice = prices.data[0];
       const isRecurring = stripePrice.type === "recurring";
 
-      const customerId = (data.customerEmail || data.userId)
-        ? await resolveOrCreateCustomer(stripe, {
-            email: data.customerEmail,
-            userId: data.userId,
-          })
-        : undefined;
+      const customerId =
+        data.customerEmail || data.userId
+          ? await resolveOrCreateCustomer(stripe, {
+              email: data.customerEmail,
+              userId: data.userId,
+            })
+          : undefined;
 
       let productDescription: string | undefined;
       if (!isRecurring) {
-        const productId = typeof stripePrice.product === "string"
-          ? stripePrice.product
-          : stripePrice.product.id;
+        const productId =
+          typeof stripePrice.product === "string" ? stripePrice.product : stripePrice.product.id;
         const product = await stripe.products.retrieve(productId);
         productDescription = (product as Stripe.Product).name;
       }
@@ -101,8 +103,7 @@ export const createPortalSession = createServerFn({ method: "POST" })
   .inputValidator((data: { returnUrl?: string; environment: StripeEnv }) => data)
   .handler(async ({ data, context }): Promise<PortalSessionResult> => {
     const { supabase, userId } = context;
-    const { data: sub, error: subError } = await (supabase
-      .from("subscriptions") as any)
+    const { data: sub, error: subError } = await (supabase.from("subscriptions") as any)
       .select("stripe_customer_id")
       .eq("user_id", userId)
       .eq("environment", data.environment)

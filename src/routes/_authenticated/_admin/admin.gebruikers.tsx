@@ -22,7 +22,9 @@ function AdminUsers() {
         .select("id, display_name, company, city, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      const { data: roles, error: rErr } = await supabase.from("user_roles").select("user_id, role");
+      const { data: roles, error: rErr } = await supabase
+        .from("user_roles")
+        .select("user_id, role");
       if (rErr) throw rErr;
       const byUser = new Map<string, AppRole[]>();
       for (const r of roles ?? []) {
@@ -37,7 +39,11 @@ function AdminUsers() {
   const toggleRole = useMutation({
     mutationFn: async ({ userId, role, has }: { userId: string; role: AppRole; has: boolean }) => {
       if (has) {
-        const { error } = await supabase.from("user_roles").delete().eq("user_id", userId).eq("role", role);
+        const { error } = await supabase
+          .from("user_roles")
+          .delete()
+          .eq("user_id", userId)
+          .eq("role", role);
         if (error) throw error;
       } else {
         const { error } = await supabase.from("user_roles").insert({ user_id: userId, role });
@@ -66,7 +72,11 @@ function AdminUsers() {
           </thead>
           <tbody>
             {isLoading && (
-              <tr><td colSpan={4} className="px-4 py-6 text-muted-foreground">Laden…</td></tr>
+              <tr>
+                <td colSpan={4} className="px-4 py-6 text-muted-foreground">
+                  Laden…
+                </td>
+              </tr>
             )}
             {users.map((u) => (
               <tr key={u.id} className="border-t border-border/60">
@@ -99,7 +109,9 @@ function AdminUsers() {
           </tbody>
         </table>
       </div>
-      <p className="text-xs text-muted-foreground">Klik op een rol om toe te kennen of in te trekken.</p>
+      <p className="text-xs text-muted-foreground">
+        Klik op een rol om toe te kennen of in te trekken.
+      </p>
     </div>
   );
 }

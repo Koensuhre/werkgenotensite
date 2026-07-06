@@ -21,18 +21,25 @@ function CheckoutReturn() {
       <div className="grid h-14 w-14 mx-auto place-items-center rounded-full bg-brand-gradient text-brand-foreground">
         <CheckCircle2 className="h-7 w-7" />
       </div>
-      <h1 className="mt-6 text-3xl font-semibold tracking-tight">Bedankt! Je abonnement is actief.</h1>
+      <h1 className="mt-6 text-3xl font-semibold tracking-tight">
+        Bedankt! Je abonnement is actief.
+      </h1>
       <p className="mt-3 text-muted-foreground">
-        Je betaling is verwerkt. Je hebt nu volledige toegang tot je dashboard en alle Professional-functies.
+        Je betaling is verwerkt. Je hebt nu volledige toegang tot je dashboard en alle
+        Professional-functies.
       </p>
-      {session_id && (
-        <p className="mt-3 text-xs text-muted-foreground">Referentie: {session_id}</p>
-      )}
+      {session_id && <p className="mt-3 text-xs text-muted-foreground">Referentie: {session_id}</p>}
       <div className="mt-8 flex justify-center gap-3">
-        <Link to="/dashboard" className="rounded-lg bg-brand-gradient px-6 py-3 text-sm font-medium text-brand-foreground shadow-glow">
+        <Link
+          to="/dashboard"
+          className="rounded-lg bg-brand-gradient px-6 py-3 text-sm font-medium text-brand-foreground shadow-glow"
+        >
           Naar mijn dashboard
         </Link>
-        <Link to="/" className="rounded-lg border border-border bg-surface px-6 py-3 text-sm font-medium">
+        <Link
+          to="/"
+          className="rounded-lg border border-border bg-surface px-6 py-3 text-sm font-medium"
+        >
           Terug naar home
         </Link>
       </div>

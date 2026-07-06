@@ -13,6 +13,7 @@ Combinatie van 1+2+3 → Vercel routet alles naar een lege static output → 404
 ## Wijzigingen
 
 ### 1. `vite.config.ts` — Nitro preset op `vercel`
+
 Nitro accepteert een `preset` optie via de TanStack Start config. We zetten 'm expliciet op `vercel`, naast de bestaande `server.entry: "server"` (de SSR error-wrapper in `src/server.ts` blijft staan en blijft werken — Nitro injecteert hem in de Vercel function).
 
 ```ts
@@ -26,6 +27,7 @@ export default defineConfig({
 Resultaat van `npm run build`: `.vercel/output/` met `config.json`, `functions/` en `static/` volgens de officiële Vercel Build Output API v3. Vercel pakt dit automatisch op, inclusief SSR routing, server functions en server routes (`/api/public/payments/webhook` etc.).
 
 ### 2. `vercel.json` — minimaliseren
+
 Vervangen door:
 
 ```json
@@ -39,12 +41,15 @@ Vervangen door:
 Geen `rewrites`, geen `outputDirectory`, geen `functions`-blok. Nitro's `.vercel/output/config.json` regelt alle routing zelf.
 
 ### 3. `api/index.ts` — verwijderen
+
 Restant van eerdere handmatige Serverless-Function-poging. Met de Nitro vercel-preset zou deze file botsen met de gegenereerde functions. Wordt verwijderd.
 
 ### 4. Lockfile-keuze
+
 Repo bevat zowel `bun.lock` (Lovable-default) als `package-lock.json` (npm). Op Vercel met `installCommand: "npm install"` wordt `package-lock.json` autoritair → `bun.lock` verwijderen. Lovable's sandbox draait ook fijn met `package-lock.json`; `bunfig.toml` (supply-chain guard) blijft staan voor wanneer iemand alsnog bun gebruikt, maar de waarheid wordt npm.
 
 ### 5. `.env.example`
+
 Nieuw bestand, alleen publieke / client-exposed waarden:
 
 ```
@@ -58,7 +63,9 @@ VITE_PAYMENTS_CLIENT_TOKEN=
 Server-secrets (Stripe secret key, Stripe webhook secret, eventuele WP application password) staan **niet** in `.env.example` — die horen exclusief in Vercel → Settings → Environment Variables (Production + Preview). README documenteert welke namen verwacht worden. Audit bevestigt: geen `VITE_`-prefix op server secrets (controle in `src/lib/stripe.server.ts`, `payments.functions.ts`, `wp.functions.ts`).
 
 ### 6. `README.md`
+
 Korte sectie per onderwerp:
+
 - Stack (TanStack Start + Nitro + Supabase + Stripe + WPGraphQL + Lovable).
 - Lokaal draaien: `npm install` → `npm run dev` → `http://localhost:8080`.
 - GitHub workflow: Lovable ↔ GitHub two-way sync, push naar `main` triggert Vercel.
@@ -68,19 +75,20 @@ Korte sectie per onderwerp:
 - Troubleshooting: 404, FUNCTION_INVOCATION_FAILED, env-var-issues.
 
 ### 7. `.nvmrc`
+
 `20` — Node 20 LTS, zodat lokaal/Vercel/Lovable dezelfde Node-major draaien.
 
 ## Bestanden samenvatting
 
-| Bestand | Actie |
-|---|---|
-| `vite.config.ts` | preset `vercel` toevoegen |
-| `vercel.json` | vervangen door minimale config |
-| `api/index.ts` | verwijderen |
-| `bun.lock` | verwijderen |
-| `.env.example` | nieuw |
-| `.nvmrc` | nieuw |
-| `README.md` | nieuw / vervangen |
+| Bestand          | Actie                          |
+| ---------------- | ------------------------------ |
+| `vite.config.ts` | preset `vercel` toevoegen      |
+| `vercel.json`    | vervangen door minimale config |
+| `api/index.ts`   | verwijderen                    |
+| `bun.lock`       | verwijderen                    |
+| `.env.example`   | nieuw                          |
+| `.nvmrc`         | nieuw                          |
+| `README.md`      | nieuw / vervangen              |
 
 Niets onder `src/` wijzigt. Geen route, geen server function, geen component, geen styles.
 

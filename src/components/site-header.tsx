@@ -37,7 +37,9 @@ export function SiteHeader() {
   const { data: wpPages } = useQuery(cmsPagesListQuery());
   // Base = WP PRIMARY menu when the admin has curated one, otherwise the
   // hardcoded fallback so app-routes always work. Order is preserved.
-  const baseNav = wpMenu?.items?.length ? wpMenu.items.map((m) => ({ to: m.href, label: m.label })) : fallbackNav;
+  const baseNav = wpMenu?.items?.length
+    ? wpMenu.items.map((m) => ({ to: m.href, label: m.label }))
+    : fallbackNav;
   // Auto-append any published WP page not already covered by baseNav so
   // new pages appear in the menu without a code change. Existing order
   // and items are never reordered or removed.
@@ -101,7 +103,10 @@ export function SiteHeader() {
                 </button>
               </>
             ) : (
-              <Link to="/auth" className="rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-foreground">
+              <Link
+                to="/auth"
+                className="rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-foreground"
+              >
                 Inloggen
               </Link>
             )}
@@ -112,7 +117,11 @@ export function SiteHeader() {
               Plaats opdracht
             </Link>
           </div>
-          <button onClick={() => setOpen((v) => !v)} className="rounded-md p-2 md:hidden" aria-label="Menu">
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="rounded-md p-2 md:hidden"
+            aria-label="Menu"
+          >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>

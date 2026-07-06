@@ -11,7 +11,10 @@ export const Route = createFileRoute("/_authenticated/_admin/admin/paginas")({
   component: PagesAdmin,
 });
 
-const WP_BASE = (import.meta.env.VITE_WP_GRAPHQL_URL as string | undefined)?.replace(/\/graphql\/?$/, "");
+const WP_BASE = (import.meta.env.VITE_WP_GRAPHQL_URL as string | undefined)?.replace(
+  /\/graphql\/?$/,
+  "",
+);
 
 function PagesAdmin() {
   const qc = useQueryClient();
@@ -58,8 +61,9 @@ function PagesAdmin() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">WordPress-pagina's</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Beheer content-pagina's die de frontend laadt via <code className="rounded bg-muted px-1">/cms/&lt;slug&gt;</code>.
-            App-routes (dashboard, opdrachten, plaats-opdracht) staan los van WordPress.
+            Beheer content-pagina's die de frontend laadt via{" "}
+            <code className="rounded bg-muted px-1">/cms/&lt;slug&gt;</code>. App-routes (dashboard,
+            opdrachten, plaats-opdracht) staan los van WordPress.
           </p>
         </div>
         <div className="flex gap-2">
@@ -83,7 +87,8 @@ function PagesAdmin() {
         <div className="rounded-md border border-warning/40 bg-warning/10 p-4 text-sm">
           <strong>WordPress is nog niet verbonden voor schrijven.</strong> Voeg de secrets{" "}
           <code>WP_BASE_URL</code>, <code>WP_APP_USER</code> en <code>WP_APP_PASSWORD</code> toe via
-          Backend → Secrets. Lezen werkt al via VITE_WP_GRAPHQL_URL; opslaan/aanmaken vereist deze 3 secrets.
+          Backend → Secrets. Lezen werkt al via VITE_WP_GRAPHQL_URL; opslaan/aanmaken vereist deze 3
+          secrets.
         </div>
       )}
 
@@ -99,7 +104,11 @@ function PagesAdmin() {
                   setNewTitle(e.target.value);
                   if (!newSlug) {
                     setNewSlug(
-                      e.target.value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+                      e.target.value
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^a-z0-9]+/g, "-")
+                        .replace(/^-|-$/g, ""),
                     );
                   }
                 }}
@@ -118,7 +127,9 @@ function PagesAdmin() {
             </label>
           </div>
           <div className="flex justify-end gap-2">
-            <button onClick={() => setShowNew(false)} className="rounded-md px-3 py-2 text-sm">Annuleren</button>
+            <button onClick={() => setShowNew(false)} className="rounded-md px-3 py-2 text-sm">
+              Annuleren
+            </button>
             <button
               onClick={onCreate}
               disabled={creating}
@@ -142,16 +153,29 @@ function PagesAdmin() {
           </thead>
           <tbody className="divide-y divide-border">
             {isLoading && (
-              <tr><td colSpan={4} className="px-4 py-6 text-center text-muted-foreground">Laden…</td></tr>
+              <tr>
+                <td colSpan={4} className="px-4 py-6 text-center text-muted-foreground">
+                  Laden…
+                </td>
+              </tr>
             )}
             {!isLoading && (pages?.length ?? 0) === 0 && (
-              <tr><td colSpan={4} className="px-4 py-6 text-center text-muted-foreground">Geen pagina's gevonden in WordPress.</td></tr>
+              <tr>
+                <td colSpan={4} className="px-4 py-6 text-center text-muted-foreground">
+                  Geen pagina's gevonden in WordPress.
+                </td>
+              </tr>
             )}
             {pages?.map((p) => (
               <tr key={p.id} className="hover:bg-surface-2/40">
-                <td className="px-4 py-3 font-medium" dangerouslySetInnerHTML={{ __html: p.title }} />
+                <td
+                  className="px-4 py-3 font-medium"
+                  dangerouslySetInnerHTML={{ __html: p.title }}
+                />
                 <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{p.slug}</td>
-                <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(p.modified).toLocaleString("nl-NL")}</td>
+                <td className="px-4 py-3 text-xs text-muted-foreground">
+                  {new Date(p.modified).toLocaleString("nl-NL")}
+                </td>
                 <td className="px-4 py-3">
                   <div className="flex justify-end gap-2">
                     <Link

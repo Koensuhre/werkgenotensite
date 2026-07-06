@@ -19,9 +19,16 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Werkgenoten — Vind betrouwbare experts voor elke klus" },
-      { name: "description", content: "Plaats gratis een opdracht, ontvang offertes van gecontroleerde professionals en kies de beste match." },
+      {
+        name: "description",
+        content:
+          "Plaats gratis een opdracht, ontvang offertes van gecontroleerde professionals en kies de beste match.",
+      },
       { property: "og:title", content: "Werkgenoten — Vind betrouwbare freelancers" },
-      { property: "og:description", content: "Ontvang offertes van gecontroleerde professionals en kies de beste match." },
+      {
+        property: "og:description",
+        content: "Ontvang offertes van gecontroleerde professionals en kies de beste match.",
+      },
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],
@@ -65,14 +72,16 @@ function Hero() {
             Vind betrouwbare experts voor elke klus
           </h1>
           <p className="animate-fade-up mx-auto mt-6 max-w-2xl text-balance text-lg text-muted-foreground">
-            Ontvang binnen 24 uur offertes van gecontroleerde professionals in heel Nederland — en kies de beste match.
+            Ontvang binnen 24 uur offertes van gecontroleerde professionals in heel Nederland — en
+            kies de beste match.
           </p>
           <div className="animate-fade-up mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               to="/plaats-opdracht"
               className="group inline-flex items-center gap-2 rounded-lg bg-brand-gradient px-6 py-3 text-sm font-medium text-brand-foreground shadow-glow transition-transform hover:scale-[1.02]"
             >
-              Plaats opdracht <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              Plaats opdracht{" "}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
               to="/word-professional"
@@ -82,9 +91,15 @@ function Hero() {
             </Link>
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><Shield className="h-3.5 w-3.5 text-brand" /> Gecontroleerde vakmensen</span>
-            <span className="inline-flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-brand" /> Offertes binnen 24u</span>
-            <span className="inline-flex items-center gap-1.5"><Star className="h-3.5 w-3.5 text-brand" /> 96.000+ reviews</span>
+            <span className="inline-flex items-center gap-1.5">
+              <Shield className="h-3.5 w-3.5 text-brand" /> Gecontroleerde vakmensen
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 text-brand" /> Offertes binnen 24u
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Star className="h-3.5 w-3.5 text-brand" /> 96.000+ reviews
+            </span>
           </div>
         </div>
 
@@ -96,13 +111,17 @@ function Hero() {
               <span className="h-3 w-3 rounded-full bg-destructive/60" />
               <span className="h-3 w-3 rounded-full bg-yellow-500/60" />
               <span className="h-3 w-3 rounded-full bg-brand/60" />
-              <span className="ml-3 text-xs text-muted-foreground">vakwerk.app/opdrachten/woonkamer-amsterdam</span>
+              <span className="ml-3 text-xs text-muted-foreground">
+                vakwerk.app/opdrachten/woonkamer-amsterdam
+              </span>
             </div>
             <div className="grid gap-6 p-6 md:grid-cols-2">
               <div>
                 <div className="text-xs text-muted-foreground">Schilderwerk · Amsterdam</div>
                 <h3 className="mt-2 text-xl font-semibold">Woonkamer schilderen (35m²)</h3>
-                <p className="mt-2 text-sm text-muted-foreground">Witte muren, één accentmuur. Plinten en kozijnen ook lakken.</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Witte muren, één accentmuur. Plinten en kozijnen ook lakken.
+                </p>
                 <div className="mt-4 flex gap-2 text-xs">
                   <span className="rounded-md bg-surface-2 px-2 py-1">Budget €600 – €900</span>
                   <span className="rounded-md bg-surface-2 px-2 py-1">4 offertes</span>
@@ -114,12 +133,19 @@ function Hero() {
                   { n: "PrimaVerf Amsterdam", p: "€780", r: 4.8 },
                   { n: "De Kleurspecialist", p: "€690", r: 4.7 },
                 ].map((o) => (
-                  <div key={o.n} className="flex items-center justify-between rounded-lg border border-border/60 bg-surface/60 p-3">
+                  <div
+                    key={o.n}
+                    className="flex items-center justify-between rounded-lg border border-border/60 bg-surface/60 p-3"
+                  >
                     <div className="flex items-center gap-3">
-                      <div className="grid h-9 w-9 place-items-center rounded-md bg-brand-gradient text-xs font-bold text-brand-foreground">{o.n[0]}</div>
+                      <div className="grid h-9 w-9 place-items-center rounded-md bg-brand-gradient text-xs font-bold text-brand-foreground">
+                        {o.n[0]}
+                      </div>
                       <div>
                         <div className="text-sm font-medium">{o.n}</div>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground"><Star className="h-3 w-3 fill-brand text-brand" /> {o.r}</div>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Star className="h-3 w-3 fill-brand text-brand" /> {o.r}
+                        </div>
                       </div>
                     </div>
                     <div className="text-sm font-semibold">{o.p}</div>
@@ -138,10 +164,24 @@ function Trust() {
   return (
     <section className="border-y border-border/60 bg-surface/30 py-10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <p className="text-center text-xs uppercase tracking-widest text-muted-foreground">Vertrouwd door professionals en opdrachtgevers in heel Nederland</p>
+        <p className="text-center text-xs uppercase tracking-widest text-muted-foreground">
+          Vertrouwd door professionals en opdrachtgevers in heel Nederland
+        </p>
         <div className="mt-6 grid grid-cols-2 items-center gap-8 opacity-70 sm:grid-cols-4 md:grid-cols-6">
-          {["BouwGroep NL", "Klusbedrijf Pro", "TuinExpert", "VakInstallatie", "GildeMeester", "DakKoning"].map((n) => (
-            <div key={n} className="text-center text-sm font-medium tracking-tight text-muted-foreground">{n}</div>
+          {[
+            "BouwGroep NL",
+            "Klusbedrijf Pro",
+            "TuinExpert",
+            "VakInstallatie",
+            "GildeMeester",
+            "DakKoning",
+          ].map((n) => (
+            <div
+              key={n}
+              className="text-center text-sm font-medium tracking-tight text-muted-foreground"
+            >
+              {n}
+            </div>
           ))}
         </div>
       </div>
@@ -151,19 +191,38 @@ function Trust() {
 
 function HowItWorks() {
   const steps = [
-    { n: "01", t: "Plaats opdracht", d: "Beschrijf jouw klus in 2 minuten. Voeg foto's toe en geef je budget aan." },
-    { n: "02", t: "Ontvang offertes", d: "Binnen 24 uur reageren gecontroleerde vakmensen met een passende offerte." },
-    { n: "03", t: "Kies professional", d: "Vergelijk reviews, chat met de pro en kies wie de klus uitvoert." },
+    {
+      n: "01",
+      t: "Plaats opdracht",
+      d: "Beschrijf jouw klus in 2 minuten. Voeg foto's toe en geef je budget aan.",
+    },
+    {
+      n: "02",
+      t: "Ontvang offertes",
+      d: "Binnen 24 uur reageren gecontroleerde vakmensen met een passende offerte.",
+    },
+    {
+      n: "03",
+      t: "Kies professional",
+      d: "Vergelijk reviews, chat met de pro en kies wie de klus uitvoert.",
+    },
   ];
   return (
     <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">In 3 stappen naar de juiste vakman</h2>
-        <p className="mt-3 text-muted-foreground">Sneller, transparanter en betrouwbaarder dan rondbellen.</p>
+        <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+          In 3 stappen naar de juiste vakman
+        </h2>
+        <p className="mt-3 text-muted-foreground">
+          Sneller, transparanter en betrouwbaarder dan rondbellen.
+        </p>
       </div>
       <div className="mt-14 grid gap-4 md:grid-cols-3">
         {steps.map((s) => (
-          <div key={s.n} className="bg-card-gradient shadow-card relative overflow-hidden rounded-2xl border border-border/60 p-6">
+          <div
+            key={s.n}
+            className="bg-card-gradient shadow-card relative overflow-hidden rounded-2xl border border-border/60 p-6"
+          >
             <div className="text-xs font-mono text-brand">{s.n}</div>
             <h3 className="mt-4 text-lg font-semibold">{s.t}</h3>
             <p className="mt-2 text-sm text-muted-foreground">{s.d}</p>
@@ -180,10 +239,16 @@ function Categories() {
     <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Populaire categorieën</h2>
-          <p className="mt-2 text-muted-foreground">Van schilderwerk tot dakwerk — vind de juiste vakman.</p>
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+            Populaire categorieën
+          </h2>
+          <p className="mt-2 text-muted-foreground">
+            Van schilderwerk tot dakwerk — vind de juiste vakman.
+          </p>
         </div>
-        <Link to="/vakmensen" className="text-sm text-brand hover:underline">Alle vakmensen →</Link>
+        <Link to="/vakmensen" className="text-sm text-brand hover:underline">
+          Alle vakmensen →
+        </Link>
       </div>
       <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
         {categories.map((c) => (
@@ -213,9 +278,13 @@ function FeaturedJobs() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Verse opdrachten</h2>
-          <p className="mt-2 text-muted-foreground">Live geplaatste klussen wachten op een offerte.</p>
+          <p className="mt-2 text-muted-foreground">
+            Live geplaatste klussen wachten op een offerte.
+          </p>
         </div>
-        <Link to="/opdrachten" className="text-sm text-brand hover:underline">Alle opdrachten →</Link>
+        <Link to="/opdrachten" className="text-sm text-brand hover:underline">
+          Alle opdrachten →
+        </Link>
       </div>
       <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {jobs.map((j) => (
@@ -227,13 +296,21 @@ function FeaturedJobs() {
           >
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span className="rounded-md bg-surface-2 px-2 py-0.5">{j.category?.name ?? "—"}</span>
-              {j.urgent && <span className="inline-flex items-center gap-1 text-brand"><Zap className="h-3 w-3" /> Spoed</span>}
+              {j.urgent && (
+                <span className="inline-flex items-center gap-1 text-brand">
+                  <Zap className="h-3 w-3" /> Spoed
+                </span>
+              )}
             </div>
             <h3 className="mt-3 font-semibold leading-snug">{j.title}</h3>
             <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{j.description}</p>
             <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-              <span>{j.city} · {timeAgo(j.created_at)}</span>
-              <span className="font-medium text-foreground">{formatBudget(j.budget_min, j.budget_max)}</span>
+              <span>
+                {j.city} · {timeAgo(j.created_at)}
+              </span>
+              <span className="font-medium text-foreground">
+                {formatBudget(j.budget_min, j.budget_max)}
+              </span>
             </div>
           </Link>
         ))}
@@ -250,7 +327,9 @@ function Stats() {
           {stats.map((s) => (
             <div key={s.label}>
               <div className="text-gradient-brand text-4xl font-semibold tracking-tight sm:text-5xl">
-                {typeof s.value === "number" && s.value > 100 ? s.value.toLocaleString("nl-NL") : s.value}
+                {typeof s.value === "number" && s.value > 100
+                  ? s.value.toLocaleString("nl-NL")
+                  : s.value}
                 <span>{s.suffix}</span>
               </div>
               <div className="mt-2 text-sm text-muted-foreground">{s.label}</div>
@@ -271,7 +350,10 @@ function Testimonials() {
       </div>
       <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {testimonials.map((t) => (
-          <figure key={t.name} className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-5">
+          <figure
+            key={t.name}
+            className="bg-card-gradient shadow-card rounded-xl border border-border/60 p-5"
+          >
             <div className="flex gap-0.5 text-brand">
               {Array.from({ length: t.rating }).map((_, i) => (
                 <Star key={i} className="h-4 w-4 fill-brand" />
@@ -293,8 +375,12 @@ function Pricing() {
   return (
     <section id="pricing" className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Eenvoudige prijzen voor professionals</h2>
-        <p className="mt-2 text-muted-foreground">Opdrachtgevers gebruiken Werkgenoten gratis. Professionals betalen per maand.</p>
+        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          Eenvoudige prijzen voor professionals
+        </h2>
+        <p className="mt-2 text-muted-foreground">
+          Opdrachtgevers gebruiken Werkgenoten gratis. Professionals betalen per maand.
+        </p>
       </div>
       <div className="mt-12 grid gap-4 md:grid-cols-3">
         {plans.map((p) => (
@@ -340,13 +426,23 @@ function CTA() {
       <div className="bg-card-gradient shadow-elegant relative overflow-hidden rounded-3xl border border-border/60 px-8 py-20 text-center">
         <div className="pointer-events-none absolute inset-0 [background-image:radial-gradient(circle_at_50%_50%,oklch(0.72_0.18_155/0.18),transparent_60%)]" />
         <div className="relative">
-          <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-5xl">Klaar voor de juiste vakman?</h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">Plaats gratis een opdracht en ontvang vandaag nog offertes.</p>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-5xl">
+            Klaar voor de juiste vakman?
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
+            Plaats gratis een opdracht en ontvang vandaag nog offertes.
+          </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link to="/plaats-opdracht" className="rounded-lg bg-brand-gradient px-6 py-3 text-sm font-medium text-brand-foreground shadow-glow">
+            <Link
+              to="/plaats-opdracht"
+              className="rounded-lg bg-brand-gradient px-6 py-3 text-sm font-medium text-brand-foreground shadow-glow"
+            >
               Plaats opdracht
             </Link>
-            <Link to="/hoe-werkt-het" className="rounded-lg border border-border bg-surface/60 px-6 py-3 text-sm font-medium">
+            <Link
+              to="/hoe-werkt-het"
+              className="rounded-lg border border-border bg-surface/60 px-6 py-3 text-sm font-medium"
+            >
               Bekijk hoe het werkt
             </Link>
           </div>

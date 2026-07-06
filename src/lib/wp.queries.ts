@@ -35,4 +35,4 @@ export const PAGE_BY_SLUG_QUERY = /* GraphQL */ `
       }
     }
   }
-`
+`;

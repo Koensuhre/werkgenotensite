@@ -1,7 +1,6 @@
-import { wpFetch } from "./client"
+import { wpFetch } from "./client";
 
 export async function getWpPage(uri: string) {
-
   const query = `
     query GetPage($uri: String!) {
       nodeByUri(uri: $uri) {
@@ -12,16 +11,13 @@ export async function getWpPage(uri: string) {
         }
       }
     }
-  `
-
+  `;
 
   const data = await wpFetch(query, {
     uri,
-  })
+  });
 
+  console.log("WORDPRESS RESPONSE:", data);
 
-  console.log("WORDPRESS RESPONSE:", data)
-
-
-  return data.nodeByUri
+  return data.nodeByUri;
 }

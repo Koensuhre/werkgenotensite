@@ -4,7 +4,8 @@ export function PaymentTestModeBanner() {
   if (!clientToken) {
     return (
       <div className="w-full bg-red-100 border-b border-red-300 px-4 py-2 text-center text-sm text-red-800">
-        Productie-betalingen zijn nog niet geconfigureerd. Voltooi Stripe go-live om betalingen te accepteren.
+        Productie-betalingen zijn nog niet geconfigureerd. Voltooi Stripe go-live om betalingen te
+        accepteren.
       </div>
     );
   }

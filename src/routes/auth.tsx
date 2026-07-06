@@ -77,19 +77,27 @@ function AuthPage() {
           <div>
             <label className="mb-1 block text-sm">E-mail</label>
             <input
-              type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
             />
           </div>
           <div>
             <label className="mb-1 block text-sm">Wachtwoord</label>
             <input
-              type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              required
+              minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
             />
           </div>
           <button
-            type="submit" disabled={loading}
+            type="submit"
+            disabled={loading}
             className="w-full rounded-md bg-brand-gradient px-4 py-2 text-sm font-medium text-brand-foreground shadow-glow disabled:opacity-60"
           >
             {loading ? "Bezig..." : mode === "signin" ? "Inloggen" : "Account aanmaken"}
@@ -100,7 +108,9 @@ function AuthPage() {
           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
           className="mt-5 w-full text-center text-sm text-muted-foreground hover:text-foreground"
         >
-          {mode === "signin" ? "Nog geen account? Maak er een aan" : "Heb je al een account? Log in"}
+          {mode === "signin"
+            ? "Nog geen account? Maak er een aan"
+            : "Heb je al een account? Log in"}
         </button>
       </div>
     </div>
