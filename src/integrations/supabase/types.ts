@@ -78,6 +78,7 @@ export type Database = {
           category_id: string | null
           city: string | null
           client_id: string
+          completed_at: string | null
           created_at: string
           description: string
           id: string
@@ -99,6 +100,7 @@ export type Database = {
           category_id?: string | null
           city?: string | null
           client_id: string
+          completed_at?: string | null
           created_at?: string
           description: string
           id?: string
@@ -120,6 +122,7 @@ export type Database = {
           category_id?: string | null
           city?: string | null
           client_id?: string
+          completed_at?: string | null
           created_at?: string
           description?: string
           id?: string
@@ -466,12 +469,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_quote: { Args: { _quote_id: string }; Returns: undefined }
+      complete_job: { Args: { _job_id: string }; Returns: undefined }
+      decline_quote: { Args: { _quote_id: string }; Returns: undefined }
+      has_active_subscription: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      submit_quote: {
+        Args: { _amount: number; _job_id: string; _message: string }
+        Returns: string
       }
     }
     Enums: {
