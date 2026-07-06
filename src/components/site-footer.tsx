@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import logoUrl from "@/assets/werkgenoten-logo.svg";
 
 export function SiteFooter() {
   return (
@@ -7,10 +8,7 @@ export function SiteFooter() {
         <div className="grid gap-12 md:grid-cols-5">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 font-semibold">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand-gradient text-brand-foreground">
-                Q
-              </span>
-              Werkgenoten
+              <img src={logoUrl} alt="Werkgenoten" className="h-9 w-auto" />
             </div>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
               Het premium marktplatform voor opdrachtgevers en gecontroleerde vakmensen in Nederland.
