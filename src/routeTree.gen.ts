@@ -30,11 +30,11 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/_admin/route'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedDashboardReviewsRouteImport } from './routes/_authenticated/dashboard.reviews'
-import { Route as AuthenticatedDashboardProjectenRouteImport } from './routes/_authenticated/dashboard.projecten'
 import { Route as AuthenticatedDashboardLeadsRouteImport } from './routes/_authenticated/dashboard.leads'
 import { Route as AuthenticatedDashboardInstellingenRouteImport } from './routes/_authenticated/dashboard.instellingen'
-import { Route as AuthenticatedDashboardBerichtenRouteImport } from './routes/_authenticated/dashboard.berichten'
 import { Route as AuthenticatedDashboardAbonnementRouteImport } from './routes/_authenticated/dashboard.abonnement'
+import { Route as AuthenticatedDashboardProjectenIndexRouteImport } from './routes/_authenticated/dashboard.projecten.index'
+import { Route as AuthenticatedDashboardBerichtenIndexRouteImport } from './routes/_authenticated/dashboard.berichten.index'
 import { Route as AuthenticatedAdminAdminIndexRouteImport } from './routes/_authenticated/_admin/admin.index'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as AuthenticatedAdminAdminThemaRouteImport } from './routes/_authenticated/_admin/admin.thema'
@@ -152,12 +152,6 @@ const AuthenticatedDashboardReviewsRoute =
     path: '/reviews',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedDashboardProjectenRoute =
-  AuthenticatedDashboardProjectenRouteImport.update({
-    id: '/projecten',
-    path: '/projecten',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
 const AuthenticatedDashboardLeadsRoute =
   AuthenticatedDashboardLeadsRouteImport.update({
     id: '/leads',
@@ -170,16 +164,22 @@ const AuthenticatedDashboardInstellingenRoute =
     path: '/instellingen',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedDashboardBerichtenRoute =
-  AuthenticatedDashboardBerichtenRouteImport.update({
-    id: '/berichten',
-    path: '/berichten',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
 const AuthenticatedDashboardAbonnementRoute =
   AuthenticatedDashboardAbonnementRouteImport.update({
     id: '/abonnement',
     path: '/abonnement',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardProjectenIndexRoute =
+  AuthenticatedDashboardProjectenIndexRouteImport.update({
+    id: '/projecten/',
+    path: '/projecten/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBerichtenIndexRoute =
+  AuthenticatedDashboardBerichtenIndexRouteImport.update({
+    id: '/berichten/',
+    path: '/berichten/',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedAdminAdminIndexRoute =
@@ -268,10 +268,8 @@ export interface FileRoutesByFullPath {
   '/opdrachten/': typeof OpdrachtenIndexRoute
   '/vakmensen/': typeof VakmensenIndexRoute
   '/dashboard/abonnement': typeof AuthenticatedDashboardAbonnementRoute
-  '/dashboard/berichten': typeof AuthenticatedDashboardBerichtenRoute
   '/dashboard/instellingen': typeof AuthenticatedDashboardInstellingenRoute
   '/dashboard/leads': typeof AuthenticatedDashboardLeadsRoute
-  '/dashboard/projecten': typeof AuthenticatedDashboardProjectenRoute
   '/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/admin/categorieen': typeof AuthenticatedAdminAdminCategorieenRoute
@@ -284,6 +282,8 @@ export interface FileRoutesByFullPath {
   '/admin/thema': typeof AuthenticatedAdminAdminThemaRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/admin/': typeof AuthenticatedAdminAdminIndexRoute
+  '/dashboard/berichten/': typeof AuthenticatedDashboardBerichtenIndexRoute
+  '/dashboard/projecten/': typeof AuthenticatedDashboardProjectenIndexRoute
   '/admin/paginas/$slug': typeof AuthenticatedAdminAdminPaginasSlugRoute
 }
 export interface FileRoutesByTo {
@@ -302,10 +302,8 @@ export interface FileRoutesByTo {
   '/opdrachten': typeof OpdrachtenIndexRoute
   '/vakmensen': typeof VakmensenIndexRoute
   '/dashboard/abonnement': typeof AuthenticatedDashboardAbonnementRoute
-  '/dashboard/berichten': typeof AuthenticatedDashboardBerichtenRoute
   '/dashboard/instellingen': typeof AuthenticatedDashboardInstellingenRoute
   '/dashboard/leads': typeof AuthenticatedDashboardLeadsRoute
-  '/dashboard/projecten': typeof AuthenticatedDashboardProjectenRoute
   '/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/admin/categorieen': typeof AuthenticatedAdminAdminCategorieenRoute
@@ -318,6 +316,8 @@ export interface FileRoutesByTo {
   '/admin/thema': typeof AuthenticatedAdminAdminThemaRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/admin': typeof AuthenticatedAdminAdminIndexRoute
+  '/dashboard/berichten': typeof AuthenticatedDashboardBerichtenIndexRoute
+  '/dashboard/projecten': typeof AuthenticatedDashboardProjectenIndexRoute
   '/admin/paginas/$slug': typeof AuthenticatedAdminAdminPaginasSlugRoute
 }
 export interface FileRoutesById {
@@ -342,10 +342,8 @@ export interface FileRoutesById {
   '/opdrachten/': typeof OpdrachtenIndexRoute
   '/vakmensen/': typeof VakmensenIndexRoute
   '/_authenticated/dashboard/abonnement': typeof AuthenticatedDashboardAbonnementRoute
-  '/_authenticated/dashboard/berichten': typeof AuthenticatedDashboardBerichtenRoute
   '/_authenticated/dashboard/instellingen': typeof AuthenticatedDashboardInstellingenRoute
   '/_authenticated/dashboard/leads': typeof AuthenticatedDashboardLeadsRoute
-  '/_authenticated/dashboard/projecten': typeof AuthenticatedDashboardProjectenRoute
   '/_authenticated/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/_admin/admin/categorieen': typeof AuthenticatedAdminAdminCategorieenRoute
@@ -358,6 +356,8 @@ export interface FileRoutesById {
   '/_authenticated/_admin/admin/thema': typeof AuthenticatedAdminAdminThemaRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/_authenticated/_admin/admin/': typeof AuthenticatedAdminAdminIndexRoute
+  '/_authenticated/dashboard/berichten/': typeof AuthenticatedDashboardBerichtenIndexRoute
+  '/_authenticated/dashboard/projecten/': typeof AuthenticatedDashboardProjectenIndexRoute
   '/_authenticated/_admin/admin/paginas/$slug': typeof AuthenticatedAdminAdminPaginasSlugRoute
 }
 export interface FileRouteTypes {
@@ -381,10 +381,8 @@ export interface FileRouteTypes {
     | '/opdrachten/'
     | '/vakmensen/'
     | '/dashboard/abonnement'
-    | '/dashboard/berichten'
     | '/dashboard/instellingen'
     | '/dashboard/leads'
-    | '/dashboard/projecten'
     | '/dashboard/reviews'
     | '/dashboard/'
     | '/admin/categorieen'
@@ -397,6 +395,8 @@ export interface FileRouteTypes {
     | '/admin/thema'
     | '/api/public/payments/webhook'
     | '/admin/'
+    | '/dashboard/berichten/'
+    | '/dashboard/projecten/'
     | '/admin/paginas/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -415,10 +415,8 @@ export interface FileRouteTypes {
     | '/opdrachten'
     | '/vakmensen'
     | '/dashboard/abonnement'
-    | '/dashboard/berichten'
     | '/dashboard/instellingen'
     | '/dashboard/leads'
-    | '/dashboard/projecten'
     | '/dashboard/reviews'
     | '/dashboard'
     | '/admin/categorieen'
@@ -431,6 +429,8 @@ export interface FileRouteTypes {
     | '/admin/thema'
     | '/api/public/payments/webhook'
     | '/admin'
+    | '/dashboard/berichten'
+    | '/dashboard/projecten'
     | '/admin/paginas/$slug'
   id:
     | '__root__'
@@ -454,10 +454,8 @@ export interface FileRouteTypes {
     | '/opdrachten/'
     | '/vakmensen/'
     | '/_authenticated/dashboard/abonnement'
-    | '/_authenticated/dashboard/berichten'
     | '/_authenticated/dashboard/instellingen'
     | '/_authenticated/dashboard/leads'
-    | '/_authenticated/dashboard/projecten'
     | '/_authenticated/dashboard/reviews'
     | '/_authenticated/dashboard/'
     | '/_authenticated/_admin/admin/categorieen'
@@ -470,6 +468,8 @@ export interface FileRouteTypes {
     | '/_authenticated/_admin/admin/thema'
     | '/api/public/payments/webhook'
     | '/_authenticated/_admin/admin/'
+    | '/_authenticated/dashboard/berichten/'
+    | '/_authenticated/dashboard/projecten/'
     | '/_authenticated/_admin/admin/paginas/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -639,13 +639,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardReviewsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/dashboard/projecten': {
-      id: '/_authenticated/dashboard/projecten'
-      path: '/projecten'
-      fullPath: '/dashboard/projecten'
-      preLoaderRoute: typeof AuthenticatedDashboardProjectenRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
     '/_authenticated/dashboard/leads': {
       id: '/_authenticated/dashboard/leads'
       path: '/leads'
@@ -660,18 +653,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardInstellingenRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/dashboard/berichten': {
-      id: '/_authenticated/dashboard/berichten'
-      path: '/berichten'
-      fullPath: '/dashboard/berichten'
-      preLoaderRoute: typeof AuthenticatedDashboardBerichtenRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
     '/_authenticated/dashboard/abonnement': {
       id: '/_authenticated/dashboard/abonnement'
       path: '/abonnement'
       fullPath: '/dashboard/abonnement'
       preLoaderRoute: typeof AuthenticatedDashboardAbonnementRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/projecten/': {
+      id: '/_authenticated/dashboard/projecten/'
+      path: '/projecten'
+      fullPath: '/dashboard/projecten/'
+      preLoaderRoute: typeof AuthenticatedDashboardProjectenIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/berichten/': {
+      id: '/_authenticated/dashboard/berichten/'
+      path: '/berichten'
+      fullPath: '/dashboard/berichten/'
+      preLoaderRoute: typeof AuthenticatedDashboardBerichtenIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/_admin/admin/': {
@@ -807,25 +807,27 @@ const AuthenticatedAdminRouteRouteWithChildren =
 
 interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAbonnementRoute: typeof AuthenticatedDashboardAbonnementRoute
-  AuthenticatedDashboardBerichtenRoute: typeof AuthenticatedDashboardBerichtenRoute
   AuthenticatedDashboardInstellingenRoute: typeof AuthenticatedDashboardInstellingenRoute
   AuthenticatedDashboardLeadsRoute: typeof AuthenticatedDashboardLeadsRoute
-  AuthenticatedDashboardProjectenRoute: typeof AuthenticatedDashboardProjectenRoute
   AuthenticatedDashboardReviewsRoute: typeof AuthenticatedDashboardReviewsRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+  AuthenticatedDashboardBerichtenIndexRoute: typeof AuthenticatedDashboardBerichtenIndexRoute
+  AuthenticatedDashboardProjectenIndexRoute: typeof AuthenticatedDashboardProjectenIndexRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
     AuthenticatedDashboardAbonnementRoute:
       AuthenticatedDashboardAbonnementRoute,
-    AuthenticatedDashboardBerichtenRoute: AuthenticatedDashboardBerichtenRoute,
     AuthenticatedDashboardInstellingenRoute:
       AuthenticatedDashboardInstellingenRoute,
     AuthenticatedDashboardLeadsRoute: AuthenticatedDashboardLeadsRoute,
-    AuthenticatedDashboardProjectenRoute: AuthenticatedDashboardProjectenRoute,
     AuthenticatedDashboardReviewsRoute: AuthenticatedDashboardReviewsRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+    AuthenticatedDashboardBerichtenIndexRoute:
+      AuthenticatedDashboardBerichtenIndexRoute,
+    AuthenticatedDashboardProjectenIndexRoute:
+      AuthenticatedDashboardProjectenIndexRoute,
   }
 
 const AuthenticatedDashboardRouteWithChildren =

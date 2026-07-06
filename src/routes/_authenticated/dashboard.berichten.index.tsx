@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/use-session";
 
-export const Route = createFileRoute("/_authenticated/dashboard/berichten")({
+export const Route = createFileRoute("/_authenticated/dashboard/berichten/")({
   component: Berichten,
 });
 

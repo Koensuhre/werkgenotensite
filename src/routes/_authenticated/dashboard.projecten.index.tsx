@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/use-session";
 import { formatBudget } from "@/lib/queries";
 
-export const Route = createFileRoute("/_authenticated/dashboard/projecten")({
+export const Route = createFileRoute("/_authenticated/dashboard/projecten/")({
   component: Projecten,
 });
 
