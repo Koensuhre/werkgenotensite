@@ -23,7 +23,6 @@ export function BlockRenderer({ blocks }: { blocks: readonly Block[] | readonly 
           }
           return null;
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return <Component key={i} {...(block as any)} />;
       })}
     </>
