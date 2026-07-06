@@ -1,114 +1,84 @@
-# TanStack Start → Vercel deploy fix (geen framework-migratie)
+# Openstaande punten Werkgenoten — prioriteitsroadmap
 
-Doel: het bestaande TanStack Start + Nitro project 1-op-1 behouden, en alleen de **deploy-laag** richting Vercel correct configureren. Geen routes, geen businesslogica, geen SSR-verwijdering, geen SPA-rewrite.
+Op basis van een audit van routes, DB-tabellen, mocks en integraties. Gegroepeerd van blokkerend → nice-to-have. Elk item = een aparte vervolgtaak die we los kunnen bouwen.
 
-## Waarom Vercel nu 404 geeft
+## P0 — Blokkerend voor lancering
 
-1. `vercel.json` zegt `"framework": "vite"` → Vercel verwacht een **statische** `dist/` met `index.html` en behandelt de deploy als plain Vite SPA. TanStack Start produceert die `index.html` niet.
-2. De Nitro-build target in `vite.config.ts` is via `@lovable.dev/vite-tanstack-config` momenteel **Cloudflare Workers** (de template-default). De build emit is dus een Worker-bundle, geen Vercel Build Output.
-3. `api/index.ts` doet `import "../dist/server/server.js"` — dat is een handmatige Vercel Serverless Function uit een eerdere poging. Het pad bestaat in de Cloudflare-build niet en deze file conflicteert met elke andere preset.
+### 1. Mock-data vervangen door echte data
+Op meerdere plekken staat nog `src/lib/mock-data.ts`:
+- **Homepage** (`routes/index.tsx`) — testimonials, stats, plans, categorieën.
+- **Prijzen** (`routes/prijzen.tsx`) — plannen hardcoded i.p.v. Stripe.
+- **Dashboard abonnement** (`routes/_authenticated/dashboard.abonnement.tsx`) — toont mock-plan, niet de echte `subscriptions`-rij.
 
-Combinatie van 1+2+3 → Vercel routet alles naar een lege static output → 404 op elke URL.
+Aanpak: categorieën uit `categories`-tabel (met live job-count), testimonials uit `reviews`-tabel (top-rated), stats uit aggregaties. `mock-data.ts` daarna verwijderen.
 
-## Wijzigingen
+### 2. Stripe abonnementen end-to-end
+- Prijzen komen uit Stripe products/prices (via `lookup_key`), niet uit code.
+- Checkout → succes → `subscriptions`-rij zichtbaar in dashboard.
+- Upgrade / downgrade / opzeggen via Stripe Billing Portal (`createPortalSession`).
+- `useSubscription` hook consequent gebruiken (incl. `environment` filter) om premium features te gaten.
+- Dunning-banner bij `past_due`, grace-period tot `current_period_end` bij `canceled`.
 
-### 1. `vite.config.ts` — Nitro preset op `vercel`
+### 3. Kernflow klant ↔ vakman afmaken
+De DB-tabellen bestaan (`jobs`, `quotes`, `messages`, `reviews`), maar de UI-flow is incompleet:
 
-Nitro accepteert een `preset` optie via de TanStack Start config. We zetten 'm expliciet op `vercel`, naast de bestaande `server.entry: "server"` (de SSR error-wrapper in `src/server.ts` blijft staan en blijft werken — Nitro injecteert hem in de Vercel function).
+- **Offerte uitbrengen** — vakman ziet job, plaatst quote via UI (nu waarschijnlijk alleen data, geen scherm).
+- **Offerte accepteren/afwijzen** — klant kiest quote → job krijgt `pro_id`, status → `in_progress`.
+- **Berichten** (`dashboard.berichten.tsx`, 56 regels) — realtime thread per job, ongelezen-badge, notificatie.
+- **Project afronden** — vakman markeert `completed` → klant krijgt prompt voor review.
+- **Reviews plaatsen** — na `completed` job, koppelt aan `validate_review_job` trigger.
+- **Leads** (`dashboard.leads.tsx`, 48 regels) — filter jobs op categorie/regio van vakman, "toon interesse".
 
-```ts
-export default defineConfig({
-  tanstackStart: {
-    server: { entry: "server", preset: "vercel" },
-  },
-});
-```
+### 4. Notificaties werkend maken
+`notifications`-tabel bestaat maar wordt niet gevuld/getoond:
+- Trigger bij nieuwe quote, quote-accept, nieuw bericht, review-goedkeuring, job-completed.
+- Bell-icoon in header met ongelezen-teller (realtime subscribe).
+- E-mail notificatie voor kritieke events (via Lovable Email).
 
-Resultaat van `npm run build`: `.vercel/output/` met `config.json`, `functions/` en `static/` volgens de officiële Vercel Build Output API v3. Vercel pakt dit automatisch op, inclusief SSR routing, server functions en server routes (`/api/public/payments/webhook` etc.).
+## P1 — Belangrijk voor kwaliteit
 
-### 2. `vercel.json` — minimaliseren
+### 5. E-mail configuratie
+- Auth-mails (welkom, wachtwoord-reset, e-mail-verificatie) met eigen branding.
+- Transactionele mails: nieuwe quote, quote-geaccepteerd, review-verzoek, admin-goedkeuring.
+- Custom domain koppelen (werkgenoten.nl of subdomein).
 
-Vervangen door:
+### 6. Google OAuth verificeren
+Code gebruikt `lovable.auth.signInWithOAuth("google", ...)` — controleren of provider daadwerkelijk is geconfigureerd via `configure_social_auth`; anders faalt eerste login met "Unsupported provider".
 
-```json
-{
-  "buildCommand": "npm run build",
-  "installCommand": "npm install",
-  "framework": null
-}
-```
+### 7. Admin-flow completeren
+- Notificatie/mail naar user bij goedkeuring/afwijzing professional-profiel.
+- Reden van afwijzing zichtbaar voor user in dashboard.
+- Bulk-acties (meerdere reviews tegelijk goedkeuren).
 
-Geen `rewrites`, geen `outputDirectory`, geen `functions`-blok. Nitro's `.vercel/output/config.json` regelt alle routing zelf.
+### 8. SEO polish
+- Unieke `og:image` per leaf-route (opdracht-detail, vakman-detail, CMS-pagina) — nu ontbreekt bijna overal.
+- JSON-LD: `LocalBusiness` op vakman-pagina, `JobPosting` op opdracht-pagina, `BreadcrumbList` op detail-pagina's.
+- Sitemap.xml + robots.txt genereren.
 
-### 3. `api/index.ts` — verwijderen
+### 9. Deploy-config afronden
+`.lovable/plan.md` beschrijft Vercel-fix (Nitro preset `vercel`, `api/index.ts` verwijderen, `.nvmrc`, README). Verifiëren of dat is toegepast of nog moet gebeuren.
 
-Restant van eerdere handmatige Serverless-Function-poging. Met de Nitro vercel-preset zou deze file botsen met de gegenereerde functions. Wordt verwijderd.
+## P2 — Nice-to-have
 
-### 4. Lockfile-keuze
+### 10. Favorieten UI
+Tabel `favorites` bestaat, geen zichtbare knop op vakman-detail of lijst met favorieten in dashboard.
 
-Repo bevat zowel `bun.lock` (Lovable-default) als `package-lock.json` (npm). Op Vercel met `installCommand: "npm install"` wordt `package-lock.json` autoritair → `bun.lock` verwijderen. Lovable's sandbox draait ook fijn met `package-lock.json`; `bunfig.toml` (supply-chain guard) blijft staan voor wanneer iemand alsnog bun gebruikt, maar de waarheid wordt npm.
+### 11. Zoekbalk werkend maken
+Op `opdrachten.tsx` en `vakmensen.tsx` staat een input maar geen filter-logica erachter.
 
-### 5. `.env.example`
+### 12. Profiel-onboarding voor professionals
+Wizard: bedrijfsgegevens → categorieën → tarieven → portfolio-foto's → verzenden voor review. Nu is `admin.paginas.$slug.tsx` de enige plek waar veel form-velden staan; professional zelf heeft geen guided flow.
 
-Nieuw bestand, alleen publieke / client-exposed waarden:
+### 13. Foto-upload voor jobs en portfolio
+Geen storage-buckets aanwezig (`storage-buckets: none`). Nodig voor: portfolio-foto's professional, foto's bij opdracht.
 
-```
-VITE_SUPABASE_URL=
-VITE_SUPABASE_PUBLISHABLE_KEY=
-VITE_SUPABASE_PROJECT_ID=
-VITE_WP_GRAPHQL_URL=
-VITE_PAYMENTS_CLIENT_TOKEN=
-```
+### 14. Analytics / dashboard-cijfers
+`dashboard.index.tsx` toont waarschijnlijk statische cijfers — koppelen aan echte counts (open leads, actieve projecten, gemiddelde review).
 
-Server-secrets (Stripe secret key, Stripe webhook secret, eventuele WP application password) staan **niet** in `.env.example` — die horen exclusief in Vercel → Settings → Environment Variables (Production + Preview). README documenteert welke namen verwacht worden. Audit bevestigt: geen `VITE_`-prefix op server secrets (controle in `src/lib/stripe.server.ts`, `payments.functions.ts`, `wp.functions.ts`).
+## Volgorde-advies
 
-### 6. `README.md`
+Start met **P0.1 (mocks weg)** en **P0.3 (kernflow)** — zonder deze werkt het platform functioneel niet. Daarna **P0.2 (Stripe)** zodat er geld binnenkomt, dan **P0.4 (notificaties)** voor engagement. P1 en P2 kunnen daarna incrementeel.
 
-Korte sectie per onderwerp:
+## Wat wil je dat ik doe
 
-- Stack (TanStack Start + Nitro + Supabase + Stripe + WPGraphQL + Lovable).
-- Lokaal draaien: `npm install` → `npm run dev` → `http://localhost:8080`.
-- GitHub workflow: Lovable ↔ GitHub two-way sync, push naar `main` triggert Vercel.
-- Vercel deploy: Framework = Other, Build = `npm run build`, Install = `npm install`, Output = leeg laten, Node 20.
-- Env vars: publiek (`.env.example`) vs server-only (Vercel dashboard).
-- WordPress headless via `VITE_WP_GRAPHQL_URL`.
-- Troubleshooting: 404, FUNCTION_INVOCATION_FAILED, env-var-issues.
-
-### 7. `.nvmrc`
-
-`20` — Node 20 LTS, zodat lokaal/Vercel/Lovable dezelfde Node-major draaien.
-
-## Bestanden samenvatting
-
-| Bestand          | Actie                          |
-| ---------------- | ------------------------------ |
-| `vite.config.ts` | preset `vercel` toevoegen      |
-| `vercel.json`    | vervangen door minimale config |
-| `api/index.ts`   | verwijderen                    |
-| `bun.lock`       | verwijderen                    |
-| `.env.example`   | nieuw                          |
-| `.nvmrc`         | nieuw                          |
-| `README.md`      | nieuw / vervangen              |
-
-Niets onder `src/` wijzigt. Geen route, geen server function, geen component, geen styles.
-
-## Validatie
-
-1. `npm install` lokaal → groen.
-2. `npm run build` lokaal → `.vercel/output/` verschijnt, geen errors.
-3. Lovable preview opnieuw checken (`/`, `/opdrachten`, `/cms/$slug`, `/admin`, `/dashboard`) — moet identiek werken want alleen build-config wijzigt.
-4. Na push naar `main` op Vercel: bevestigen dat home, deep-link refresh, `/api/public/payments/webhook` (POST), Supabase auth-flow en WPGraphQL-fetch allemaal werken.
-
-## Handmatige stappen voor jou
-
-1. **Vercel project** → Settings → Git → koppel aan GitHub repo, branch `main`.
-2. **Vercel** → Settings → General → **Framework Preset = Other**, **Node.js Version = 20.x**. Build/Install/Output velden mogen leeg blijven (worden uit `vercel.json` gelezen).
-3. **Vercel** → Settings → Environment Variables → toevoegen voor Production én Preview:
-   - alle `VITE_*` uit `.env.example`
-   - server-secrets: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, eventuele WP credentials (`WP_APPLICATION_PASSWORD` o.i.d. — bevestig de exacte naam die `wp.functions.ts` leest).
-4. **Vercel** → Deployments → Redeploy (eerste keer; daarna gaat elke `main`-push automatisch).
-5. **Stripe Dashboard** → Webhook endpoint URL updaten naar `https://<je-vercel-domain>/api/public/payments/webhook`.
-
-## Vraag voordat ik bouw
-
-`src/lib/wp.functions.ts` gebruikt waarschijnlijk een WordPress Application Password als server-secret. Hoe heet die env-var nu in Lovable (zodat ik 'm correct in README/`.env.example`-doc opneem en jij 'm 1-op-1 in Vercel kunt zetten)?
+Zeg welk P0-blok ik als eerste ga bouwen (bv. "start met P0.1" of "doe P0.3 quote-flow"), dan maak ik daar een concreet implementatieplan van met bestanden, migraties en UI-schermen.
