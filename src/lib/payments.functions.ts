@@ -155,3 +155,42 @@ export const createPortalSession = createServerFn({ method: "POST" })
       return { error: getStripeErrorMessage(error) };
     }
   });
+
+export const listPlans = createServerFn({ method: "GET" })
+  .inputValidator((data: { environment: StripeEnv }) => data)
+  .handler(async ({ data }): Promise<{ plans: PlanDTO[] } | { error: string }> => {
+    try {
+      const stripe = createStripeClient(data.environment);
+      const prices = await stripe.prices.list({
+        active: true,
+        limit: 100,
+        expand: ["data.product"],
+      });
+
+      const plans: PlanDTO[] = [];
+      for (const price of prices.data) {
+        if (price.type !== "recurring" || !price.recurring) continue;
+        if (!price.lookup_key) continue;
+        const product = price.product as Stripe.Product;
+        if (!product || typeof product === "string" || product.deleted || !product.active) continue;
+        const meta = product.metadata ?? {};
+        plans.push({
+          priceId: price.lookup_key,
+          productId: product.id,
+          name: product.name,
+          tagline: meta.tagline ?? product.description ?? null,
+          price: (price.unit_amount ?? 0) / 100,
+          currency: price.currency,
+          interval: price.recurring.interval,
+          features: parseFeatures(meta.features),
+          highlight: meta.highlight === "true" || meta.highlight === "1",
+          cta: meta.cta ?? "Kies dit plan",
+          sort: Number.parseInt(meta.sort ?? "0", 10) || 0,
+        });
+      }
+      plans.sort((a, b) => a.sort - b.sort || a.price - b.price);
+      return { plans };
+    } catch (error) {
+      return { error: getStripeErrorMessage(error) };
+    }
+  });
