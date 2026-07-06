@@ -1,8 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, Sparkles, Shield, Clock, Star, Zap } from "lucide-react";
-import { testimonials, stats, plans } from "@/lib/mock-data";
 import { CmsFallback } from "@/components/cms/CmsFallback";
-import { useCategories, useJobs, formatBudget, timeAgo } from "@/lib/queries";
+import {
+  useCategories,
+  useCategoryCounts,
+  useJobs,
+  useHomeStats,
+  useTopReviews,
+  usePlans,
+  initialsOf,
+  formatBudget,
+  timeAgo,
+} from "@/lib/queries";
 
 const CATEGORY_ICONS: Record<string, string> = {
   schilderwerk: "🎨",
