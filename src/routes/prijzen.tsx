@@ -3,6 +3,7 @@ import { CheckCircle2, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { usePlans } from "@/lib/queries";
 import { useSession } from "@/hooks/use-session";
+import { useSubscription, isActiveSubscription } from "@/hooks/use-subscription";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
@@ -28,6 +29,8 @@ export const Route = createFileRoute("/prijzen")({
 function Pricing() {
   const navigate = useNavigate();
   const { user } = useSession();
+  const { data: sub } = useSubscription();
+  const active = isActiveSubscription(sub);
   const [checkoutPriceId, setCheckoutPriceId] = useState<string | null>(null);
   const { data: plans = [], isLoading } = usePlans();
 
@@ -62,7 +65,9 @@ function Pricing() {
           </div>
         ) : (
         <div className="mt-14 grid gap-4 md:grid-cols-3">
-          {plans.map((p) => (
+          {plans.map((p) => {
+            const isCurrent = active && sub?.price_id === p.priceId;
+            return (
             <div
               key={p.priceId}
               className={`relative rounded-2xl border p-6 ${p.highlight ? "border-brand/50 bg-card-gradient shadow-glow" : "border-border/60 bg-card-gradient shadow-card"}`}
@@ -90,13 +95,15 @@ function Pricing() {
               </ul>
               <button
                 type="button"
+                disabled={isCurrent}
                 onClick={() => startCheckout(p.priceId)}
-                className={`mt-8 w-full rounded-lg px-4 py-2.5 text-center text-sm font-medium ${p.highlight ? "bg-brand-gradient text-brand-foreground" : "border border-border bg-surface hover:bg-surface-2"}`}
+                className={`mt-8 w-full rounded-lg px-4 py-2.5 text-center text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed ${p.highlight ? "bg-brand-gradient text-brand-foreground" : "border border-border bg-surface hover:bg-surface-2"}`}
               >
-                {p.cta}
+                {isCurrent ? "Huidig plan" : active ? "Wijzig naar dit plan" : p.cta}
               </button>
             </div>
-          ))}
+          );
+          })}
         </div>
         )}
         <p className="mt-10 text-center text-xs text-muted-foreground">
