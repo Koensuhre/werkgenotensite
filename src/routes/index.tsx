@@ -137,9 +137,9 @@ function Hero() {
               </div>
               <div className="space-y-2">
                 {[
-                  { n: "Van Dijk Schilders", p: "€720", r: 4.9 },
-                  { n: "PrimaVerf Amsterdam", p: "€780", r: 4.8 },
-                  { n: "De Kleurspecialist", p: "€690", r: 4.7 },
+                  { n: "KERZO digital", p: "€720", r: 4.9 },
+                  { n: "Web Agency Twente", p: "€780", r: 4.8 },
+                  { n: "SEO specialist", p: "€690", r: 4.7 },
                 ].map((o) => (
                   <div
                     key={o.n}
@@ -173,16 +173,16 @@ function Trust() {
     <section className="border-y border-border/60 bg-surface/30 py-10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <p className="text-center text-xs uppercase tracking-widest text-muted-foreground">
-          Vertrouwd door professionals en opdrachtgevers in heel Nederland
+          Vertrouwd door freelancers en opdrachtgevers in heel Nederland
         </p>
         <div className="mt-6 grid grid-cols-2 items-center gap-8 opacity-70 sm:grid-cols-4 md:grid-cols-6">
           {[
-            "BouwGroep NL",
-            "Klusbedrijf Pro",
-            "TuinExpert",
-            "VakInstallatie",
+            "OnlineGroep NL",
+            "SEO Pro",
+            "WebExpert",
+            "Vakwerk",
             "GildeMeester",
-            "DakKoning",
+            "AD Specialist",
           ].map((n) => (
             <div
               key={n}
@@ -202,16 +202,16 @@ function HowItWorks() {
     {
       n: "01",
       t: "Plaats opdracht",
-      d: "Beschrijf jouw klus in 2 minuten. Voeg foto's toe en geef je budget aan.",
+      d: "Beschrijf jouw opdracht in 2 minuten. Voeg foto's toe en geef je budget aan.",
     },
     {
       n: "02",
       t: "Ontvang offertes",
-      d: "Binnen 24 uur reageren gecontroleerde vakmensen met een passende offerte.",
+      d: "Binnen 24 uur reageren gecontroleerde freelancers met een passende offerte.",
     },
     {
       n: "03",
-      t: "Kies professional",
+      t: "Kies specialist",
       d: "Vergelijk reviews, chat met de pro en kies wie de klus uitvoert.",
     },
   ];
@@ -219,7 +219,7 @@ function HowItWorks() {
     <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-2xl text-center">
         <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
-          In 3 stappen naar de juiste vakman
+          In 3 stappen naar de juiste specialisten
         </h2>
         <p className="mt-3 text-muted-foreground">
           Sneller, transparanter en betrouwbaarder dan rondbellen.
@@ -252,11 +252,11 @@ function Categories() {
             Populaire categorieën
           </h2>
           <p className="mt-2 text-muted-foreground">
-            Van schilderwerk tot dakwerk — vind de juiste vakman.
+            Van Marketing tot Websites — vind de juiste freelancer.
           </p>
         </div>
         <Link to="/vakmensen" className="text-sm text-brand hover:underline">
-          Alle vakmensen →
+          Alle specialisten →
         </Link>
       </div>
       <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
@@ -294,7 +294,7 @@ function FeaturedJobs() {
         <div>
           <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Verse opdrachten</h2>
           <p className="mt-2 text-muted-foreground">
-            Live geplaatste klussen wachten op een offerte.
+            Live geplaatste opdrachten wachten op een offerte.
           </p>
         </div>
         <Link to="/opdrachten" className="text-sm text-brand hover:underline">
@@ -338,7 +338,7 @@ function Stats() {
   const { data } = useHomeStats();
   const stats = [
     { value: data?.jobsCount ?? 0, label: "Opdrachten geplaatst", suffix: "+" },
-    { value: data?.prosCount ?? 0, label: "Professionals", suffix: "+" },
+    { value: data?.prosCount ?? 0, label: "Specialisten", suffix: "+" },
     { value: data?.reviewsCount ?? 0, label: "Reviews", suffix: "+" },
     { value: data?.avgRating ?? 0, label: "Gemiddelde score", suffix: "/5" },
   ];
