@@ -98,3 +98,4 @@ Elk blok is één beurt met migratie + code. Ik wacht je "ok" tussen A en B.
 3. **Project afronden:** alleen client kan afronden, of ook pro (met bevestiging door client)? *(default: alleen client)*
 
 Zeg "start A" om blok A te bouwen (met bovenstaande defaults tenzij je aanpast), of geef feedback.
+test synch
