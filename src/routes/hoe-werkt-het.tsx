@@ -52,7 +52,7 @@ function HowItWorks() {
           Zo werkt Werkgenoten
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-          Drie stappen om jouw klus aan de juiste vakman te koppelen.
+          Drie stappen om jouw klus aan de juiste specialist te koppelen.
         </p>
       </div>
 

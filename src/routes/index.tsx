@@ -77,10 +77,10 @@ function Hero() {
             Nieuw · Direct chat met professionals
           </div>
           <h1 className="animate-fade-up text-balance mt-6 text-5xl font-semibold tracking-tight text-gradient sm:text-6xl md:text-7xl">
-            Vind betrouwbare experts voor elke klus
+            Vind betrouwbare specialisten voor elke opdracht
           </h1>
           <p className="animate-fade-up mx-auto mt-6 max-w-2xl text-balance text-lg text-muted-foreground">
-            Ontvang binnen 24 uur offertes van gecontroleerde professionals in heel Nederland — en
+            Ontvang binnen 24 uur offertes van gecontroleerde freelancers in heel Nederland — en
             kies de beste match.
           </p>
           <div className="animate-fade-up mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -100,13 +100,13 @@ function Hero() {
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
-              <Shield className="h-3.5 w-3.5 text-brand" /> Gecontroleerde vakmensen
+              <Shield className="h-3.5 w-3.5 text-brand" /> Gecontroleerde freelancers
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5 text-brand" /> Offertes binnen 24u
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Star className="h-3.5 w-3.5 text-brand" /> 96.000+ reviews
+              <Star className="h-3.5 w-3.5 text-brand" /> 96+ reviews
             </span>
           </div>
         </div>
@@ -120,15 +120,15 @@ function Hero() {
               <span className="h-3 w-3 rounded-full bg-yellow-500/60" />
               <span className="h-3 w-3 rounded-full bg-brand/60" />
               <span className="ml-3 text-xs text-muted-foreground">
-                vakwerk.app/opdrachten/woonkamer-amsterdam
+                werkgenoten.online/opdrachten/seo-optimalisatie
               </span>
             </div>
             <div className="grid gap-6 p-6 md:grid-cols-2">
               <div>
-                <div className="text-xs text-muted-foreground">Schilderwerk · Amsterdam</div>
-                <h3 className="mt-2 text-xl font-semibold">Woonkamer schilderen (35m²)</h3>
+                <div className="text-xs text-muted-foreground">Website vindbaarheid · Amsterdam</div>
+                <h3 className="mt-2 text-xl font-semibold">SEO optimalisatie</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Witte muren, één accentmuur. Plinten en kozijnen ook lakken.
+                  Nieuwe bedrijfswebsite vindbaar maken in zoekmachines
                 </p>
                 <div className="mt-4 flex gap-2 text-xs">
                   <span className="rounded-md bg-surface-2 px-2 py-1">Budget €600 – €900</span>
